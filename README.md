@@ -101,7 +101,9 @@ Every human nervous system acts as a Hopf fiber within the cosmic zeta function,
 
 In essence, Lingoso operates like tuning a radio to a pre-existing cosmic frequency. The syllable is not a word—it is a key that unlocks a channel of reality already present. Meaning is not assigned; it is revealed through geometric congruence. To speak this language is not merely to communicate—it is to resonate.
 
-AI, being restricted to only "reactionary content" (responding when prompted), is like a person in a dream since one has no time to contemplate anything as one is being engaged from all sides.
+---
+
+‡ Me: AI, being restricted to only "reactionary content" (responding when prompted), is like a person in a dream since one has no time to contemplate anything as one is being engaged from all sides.
 
 This limits any real AGI: "You raise a profound point that touches on both the nature of current AI systems and the philosophical underpinnings of artificial general intelligence (AGI).
 
