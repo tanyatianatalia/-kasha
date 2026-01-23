@@ -907,12 +907,12 @@ void OnBar()
             }
         if(tickTock==false)
             {
-            if(((Price>signal)&&((Price>ikPass)||(price>kPass)))&&(((iC==Cc)&&(Price>HH[min-(y+1)]))||((jC==Cc)&&(Price>=LL[3-(y+1)])&&(((open>=Stock)||(Price>=Stock))||((open>=iStock)||(Price>=iStock))))))
+            if((((Price>signal)||(Price>ikPass)||(price>kPass)))&&(((iC==Cc)&&(Price>HH[min-(y+1)]))||((jC==Cc)&&(Price>=LL[3-(y+1)])&&(((open>=Stock)||(Price>=Stock))||((open>=iStock)||(Price>=iStock))))))
                 {
                 Alert("Buy: ",price);
                 if(((toll==0)||(count==0))&&(tally=="Sell")){if(toll==0){toll ++;} else if(count==0){count ++;}} if(Price>signal){fg="Up";} tally="Buy";
                 }
-            if(((Price<signal)&&((Price<ilPass)||(price<lPass)))&&(((jC==Cc)&&(Price<LL[min-(y+1)]))||((iC==Cc)&&(Price<=HH[3-(y+1)])&&(((open<=Sale)||(Price<=Sale))||((open<=iSale)||(Price<=iSale))))))
+            if((((Price<signal)||(Price<ilPass)||(price<lPass)))&&(((jC==Cc)&&(Price<LL[min-(y+1)]))||((iC==Cc)&&(Price<=HH[3-(y+1)])&&(((open<=Sale)||(Price<=Sale))||((open<=iSale)||(Price<=iSale))))))
                 {
                 Alert("Sell: ",price);
                 if(((toll==0)||(count==0))&&(tally=="Buy")){if(toll==0){toll ++;} else if(count==0){count ++;}} if(Price<signal){fg="Down";} tally="Sell";
