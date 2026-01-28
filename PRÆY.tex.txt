@@ -1,0 +1,781 @@
+% === LOGOS: SELF-REFERENTIAL ENCYCLOPEDIA OF MATHEMATICS ===
+% Segment 1 of N — Foundations: Primitive Objects and Axiomatic Sets
+% No natural language. Pure symbolic construction from ∅ upward.
+
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small, breaklines=true}
+
+\begin{document}
+
+\title{LOGOS}
+\author{}
+\date{}
+\maketitle
+
+% Primitive Symbol Set
+\[
+\Sigma_0 := \{ \varnothing, \in, =, \forall, \exists, \neg, \land, \lor, \Rightarrow, \Leftrightarrow, (, ), \{, \}, \lambda, ., :, \mapsto \}
+\]
+
+% Axiom of Empty Set
+\[
+\text{Ax}_\varnothing \;:\; \exists x \, \forall y \, \neg(y \in x)
+\]
+Define:
+\[
+\varnothing := \iota x \, (\forall y \, \neg(y \in x))
+\]
+
+% Axiom of Extensionality
+\[
+\text{Ax}_{\text{Ext}} \;:\; \forall x \, \forall y \, \left( (\forall z \, (z \in x \Leftrightarrow z \in y)) \Rightarrow x = y \right)
+\]
+
+% Axiom of Pairing
+\[
+\text{Ax}_{\text{Pair}} \;:\; \forall a \, \forall b \, \exists c \, \forall x \, (x \in c \Leftrightarrow (x = a \lor x = b))
+\]
+Define singleton and pair:
+\[
+\{a\} := \iota c \, \forall x \, (x \in c \Leftrightarrow x = a)
+\]
+\[
+\{a, b\} := \iota c \, \forall x \, (x \in c \Leftrightarrow (x = a \lor x = b))
+\]
+
+% Axiom of Union
+\[
+\text{Ax}_{\cup} \;:\; \forall \mathcal{F} \, \exists U \, \forall x \, (x \in U \Leftrightarrow \exists A \, (A \in \mathcal{F} \land x \in A))
+\]
+Define:
+\[
+\bigcup \mathcal{F} := \iota U \, \forall x \, (x \in U \Leftrightarrow \exists A \in \mathcal{F} \, (x \in A))
+\]
+
+% Axiom of Power Set
+\[
+\text{Ax}_{\mathcal{P}} \;:\; \forall A \, \exists \mathcal{P}(A) \, \forall x \, (x \in \mathcal{P}(A) \Leftrightarrow x \subseteq A)
+\]
+where
+\[
+x \subseteq A := \forall y \, (y \in x \Rightarrow y \in A)
+\]
+
+% Axiom Schema of Separation (for any formula $\phi$ with free variable $x$ and parameters)
+\[
+\text{Ax}_{\text{Sep}}[\phi] \;:\; \forall A \, \exists B \, \forall x \, (x \in B \Leftrightarrow (x \in A \land \phi(x)))
+\]
+Define:
+\[
+\{ x \in A \mid \phi(x) \} := \iota B \, \forall x \, (x \in B \Leftrightarrow (x \in A \land \phi(x)))
+\]
+
+% Natural Numbers via von Neumann Construction
+\[
+0 := \varnothing
+\]
+\[
+n + 1 := n \cup \{n\}
+\]
+Define successor function:
+\[
+S(n) := n \cup \{n\}
+\]
+Inductive set:
+\[
+\omega := \bigcap \{ I \mid \varnothing \in I \land \forall n \in I \, (S(n) \in I) \}
+\]
+Axiom of Infinity guarantees existence of such $I$.
+
+% Ordered Pair (Kuratowski)
+\[
+(a, b) := \{ \{a\}, \{a, b\} \}
+\]
+Projection functions:
+\[
+\pi_1(p) := \iota x \, \exists y \, (p = (x, y))
+\]
+\[
+\pi_2(p) := \iota y \, \exists x \, (p = (x, y))
+\]
+
+% Cartesian Product
+\[
+A \times B := \{ z \in \mathcal{P}(\mathcal{P}(A \cup B)) \mid \exists a \in A \, \exists b \in B \, (z = (a, b)) \}
+\]
+
+% Relations and Functions
+\[
+\text{Rel}(R, A, B) :\Leftrightarrow R \subseteq A \times B
+\]
+\[
+\text{Fun}(f, A, B) :\Leftrightarrow \text{Rel}(f, A, B) \land \forall x \in A \, \exists! y \in B \, ((x, y) \in f)
+\]
+Function application:
+\[
+f(x) := \iota y \, ((x, y) \in f)
+\]
+
+% Equivalence Relation
+\[
+\text{Equiv}(R, A) :\Leftrightarrow \text{Rel}(R, A, A) \land \\
+\quad (\forall x \in A \, (x, x) \in R) \land \\
+\quad (\forall x, y \in A \, ((x, y) \in R \Rightarrow (y, x) \in R)) \land \\
+\quad (\forall x, y, z \in A \, (((x, y) \in R \land (y, z) \in R) \Rightarrow (x, z) \in R))
+\]
+
+% Quotient Set
+\[
+A / R := \{ [x]_R \mid x \in A \}
+\]
+where
+\[
+[x]_R := \{ y \in A \mid (x, y) \in R \}
+\]
+
+% Peano Arithmetic (as theorems in ZF)
+\[
+\text{PA}_1: 0 \in \omega
+\]
+\[
+\text{PA}_2: \forall n \in \omega \, (S(n) \in \omega)
+\]
+\[
+\text{PA}_3: \forall n \in \omega \, (S(n) \neq 0)
+\]
+\[
+\text{PA}_4: \forall m, n \in \omega \, (S(m) = S(n) \Rightarrow m = n)
+\]
+\[
+\text{PA}_5: \forall P \subseteq \omega \, ((0 \in P \land \forall n \in P \, (S(n) \in P)) \Rightarrow P = \omega)
+\]
+
+% Integer Construction via Equivalence Classes on $\omega \times \omega$
+Define relation $\sim_{\mathbb{Z}}$ on $\omega \times \omega$:
+\[
+(a, b) \sim_{\mathbb{Z}} (c, d) :\Leftrightarrow a + d = b + c
+\]
+\[
+\mathbb{Z} := (\omega \times \omega) / \sim_{\mathbb{Z}}
+\]
+Embedding:
+\[
+\iota_{\mathbb{N}\hookrightarrow\mathbb{Z}}(n) := [(n, 0)]_{\sim_{\mathbb{Z}}}
+\]
+
+% Rational Numbers via Equivalence on $\mathbb{Z} \times (\mathbb{Z} \setminus \{0\})$
+\[
+(a, b) \sim_{\mathbb{Q}} (c, d) :\Leftrightarrow a \cdot d = b \cdot c
+\]
+\[
+\mathbb{Q} := (\mathbb{Z} \times (\mathbb{Z} \setminus \{0\})) / \sim_{\mathbb{Q}}
+\]
+
+% Real Numbers via Dedekind Cuts
+\[
+\text{Cut}(L) :\Leftrightarrow L \subseteq \mathbb{Q} \land \\
+\quad L \neq \varnothing \land L \neq \mathbb{Q} \land \\
+\quad (\forall p \in L \, \forall q \in \mathbb{Q} \, (q < p \Rightarrow q \in L)) \land \\
+\quad (\forall p \in L \, \exists r \in L \, (p < r))
+\]
+\[
+\mathbb{R} := \{ L \subseteq \mathbb{Q} \mid \text{Cut}(L) \}
+\]
+
+% Order on $\mathbb{R}$
+\[
+L_1 \leq L_2 :\Leftrightarrow L_1 \subseteq L_2
+\]
+
+% Arithmetic on $\mathbb{R}$ (addition)
+\[
+L_1 + L_2 := \{ p + q \mid p \in L_1 \land q \in L_2 \}
+\]
+
+% Topological Space Definition
+\[
+\text{Top}(X, \tau) :\Leftrightarrow \\
+\quad \tau \subseteq \mathcal{P}(X) \land \\
+\quad \varnothing \in \tau \land X \in \tau \land \\
+\quad (\forall \{U_i\}_{i \in I} \subseteq \tau \, (\bigcup_{i \in I} U_i \in \tau)) \land \\
+\quad (\forall U, V \in \tau \, (U \cap V \in \tau))
+\]
+
+% Standard Topology on $\mathbb{R}$
+\[
+\tau_{\mathbb{R}} := \{ U \subseteq \mathbb{R} \mid \forall x \in U \, \exists \varepsilon > 0 \, (B_\varepsilon(x) \subseteq U) \}
+\]
+where
+\[
+B_\varepsilon(x) := \{ y \in \mathbb{R} \mid |x - y| < \varepsilon \}
+\]
+and absolute value:
+\[
+|x| := \begin{cases}
+x & \text{if } x \geq 0 \\
+-x & \text{if } x < 0
+\end{cases}
+\]
+(defined via order on $\mathbb{R}$)
+
+% Continuity
+\[
+f : (X, \tau_X) \to (Y, \tau_Y) \text{ continuous } :\Leftrightarrow \forall V \in \tau_Y \, (f^{-1}(V) \in \tau_X)
+\]
+where
+\[
+f^{-1}(V) := \{ x \in X \mid f(x) \in V \}
+\]
+
+% Metric Space
+\[
+\text{Metric}(X, d) :\Leftrightarrow \\
+\quad d : X \times X \to \mathbb{R} \land \\
+\quad (\forall x, y \in X \, (d(x, y) \geq 0)) \land \\
+\quad (\forall x, y \in X \, (d(x, y) = 0 \Leftrightarrow x = y)) \land \\
+\quad (\forall x, y \in X \, (d(x, y) = d(y, x))) \land \\
+\quad (\forall x, y, z \in X \, (d(x, z) \leq d(x, y) + d(y, z)))
+\]
+
+% Induced Topology from Metric
+\[
+\tau_d := \{ U \subseteq X \mid \forall x \in U \, \exists \varepsilon > 0 \, (B_\varepsilon^d(x) \subseteq U) \}
+\]
+\[
+B_\varepsilon^d(x) := \{ y \in X \mid d(x, y) < \varepsilon \}
+\]
+
+% === LOGOS: SELF-REFERENTIAL ENCYCLOPEDIA OF MATHEMATICS ===
+% Segment 2 of N — Algebraic Structures, Category Theory, and Internal Logic
+
+% Group
+\[
+\text{Grp}(G, \cdot, e) :\Leftrightarrow \\
+\quad \cdot : G \times G \to G \land e \in G \land \\
+\quad (\forall x, y, z \in G \, ((x \cdot y) \cdot z = x \cdot (y \cdot z))) \land \\
+\quad (\forall x \in G \, (e \cdot x = x \land x \cdot e = x)) \land \\
+\quad (\forall x \in G \, \exists x^{-1} \in G \, (x \cdot x^{-1} = e \land x^{-1} \cdot x = e))
+\]
+
+% Ring
+\[
+\text{Ring}(R, +, \cdot, 0, 1) :\Leftrightarrow \\
+\quad \text{Grp}(R, +, 0) \land \\
+\quad \cdot : R \times R \to R \land 1 \in R \land \\
+\quad (\forall x, y, z \in R \, (x \cdot (y \cdot z) = (x \cdot y) \cdot z)) \land \\
+\quad (\forall x \in R \, (1 \cdot x = x \land x \cdot 1 = x)) \land \\
+\quad (\forall x, y, z \in R \, (x \cdot (y + z) = x \cdot y + x \cdot z \land (x + y) \cdot z = x \cdot z + y \cdot z))
+\]
+
+% Field
+\[
+\text{Fld}(F, +, \cdot, 0, 1) :\Leftrightarrow \\
+\quad \text{Ring}(F, +, \cdot, 0, 1) \land 0 \neq 1 \land \\
+\quad (\forall x \in F \setminus \{0\} \, \exists x^{-1} \in F \, (x \cdot x^{-1} = 1))
+\]
+
+% Vector Space over Field $F$
+\[
+\text{VecSp}(V, F, +_V, \cdot_F) :\Leftrightarrow \\
+\quad \text{Grp}(V, +_V, 0_V) \land \text{Fld}(F, +, \cdot, 0, 1) \land \\
+\quad \cdot_F : F \times V \to V \land \\
+\quad (\forall a, b \in F \, \forall u, v \in V \, \\
+\quad\quad a \cdot_F (u +_V v) = a \cdot_F u +_V a \cdot_F v \land \\
+\quad\quad (a + b) \cdot_F u = a \cdot_F u +_V b \cdot_F u \land \\
+\quad\quad (a \cdot b) \cdot_F u = a \cdot_F (b \cdot_F u) \land \\
+\quad\quad 1 \cdot_F u = u)
+\]
+
+% Category
+\[
+\text{Cat}(\mathcal{C}) :\Leftrightarrow \\
+\quad \text{Ob}(\mathcal{C}) \text{ is a class} \land \\
+\quad \forall A, B \in \text{Ob}(\mathcal{C}) \, (\text{Hom}_{\mathcal{C}}(A, B) \text{ is a set}) \land \\
+\quad \forall A \in \text{Ob}(\mathcal{C}) \, (\exists \text{id}_A \in \text{Hom}(A, A)) \land \\
+\quad \forall A, B, C \in \text{Ob}(\mathcal{C}) \, (\circ_{A,B,C} : \text{Hom}(B, C) \times \text{Hom}(A, B) \to \text{Hom}(A, C)) \land \\
+\quad (\forall f \in \text{Hom}(A, B) \, (\text{id}_B \circ f = f \land f \circ \text{id}_A = f)) \land \\
+\quad (\forall f \in \text{Hom}(A, B) \, \forall g \in \text{Hom}(B, C) \, \forall h \in \text{Hom}(C, D) \, (h \circ (g \circ f) = (h \circ g) \circ f))
+\]
+
+% Functor
+\[
+\text{Ftr}(F, \mathcal{C}, \mathcal{D}) :\Leftrightarrow \\
+\quad F : \text{Ob}(\mathcal{C}) \to \text{Ob}(\mathcal{D}) \land \\
+\quad \forall A, B \in \text{Ob}(\mathcal{C}) \, (F_{A,B} : \text{Hom}_{\mathcal{C}}(A, B) \to \text{Hom}_{\mathcal{D}}(F(A), F(B))) \land \\
+\quad (\forall A \in \text{Ob}(\mathcal{C}) \, (F_{A,A}(\text{id}_A) = \text{id}_{F(A)})) \land \\
+\quad (\forall f \in \text{Hom}(A, B) \, \forall g \in \text{Hom}(B, C) \, (F_{A,C}(g \circ f) = F_{B,C}(g) \circ F_{A,B}(f)))
+\]
+
+% Natural Transformation
+\[
+\text{Nat}(\eta, F, G, \mathcal{C}, \mathcal{D}) :\Leftrightarrow \\
+\quad \text{Ftr}(F, \mathcal{C}, \mathcal{D}) \land \text{Ftr}(G, \mathcal{C}, \mathcal{D}) \land \\
+\quad \forall A \in \text{Ob}(\mathcal{C}) \, (\eta_A \in \text{Hom}_{\mathcal{D}}(F(A), G(A))) \land \\
+\quad (\forall f \in \text{Hom}_{\mathcal{C}}(A, B) \, (\eta_B \circ F(f) = G(f) \circ \eta_A))
+\]
+
+% Cartesian Closed Category (CCC)
+\[
+\text{CCC}(\mathcal{C}) :\Leftrightarrow \\
+\quad \text{Cat}(\mathcal{C}) \land \\
+\quad (\exists 1 \in \text{Ob}(\mathcal{C}) \, \forall A \in \text{Ob}(\mathcal{C}) \, (\exists! f \in \text{Hom}(A, 1))) \land \\
+\quad (\forall A, B \in \text{Ob}(\mathcal{C}) \, \exists A \times B \in \text{Ob}(\mathcal{C}) \, \\
+\quad\quad \exists \pi_1 \in \text{Hom}(A \times B, A) \, \exists \pi_2 \in \text{Hom}(A \times B, B) \, \\
+\quad\quad \forall C \, \forall f \in \text{Hom}(C, A) \, \forall g \in \text{Hom}(C, B) \, \\
+\quad\quad\quad \exists! \langle f, g \rangle \in \text{Hom}(C, A \times B) \, (\pi_1 \circ \langle f, g \rangle = f \land \pi_2 \circ \langle f, g \rangle = g)) \land \\
+\quad (\forall A, B \in \text{Ob}(\mathcal{C}) \, \exists B^A \in \text{Ob}(\mathcal{C}) \, \\
+\quad\quad \exists \text{eval}_{A,B} \in \text{Hom}(B^A \times A, B) \, \\
+\quad\quad \forall C \, \forall f \in \text{Hom}(C \times A, B) \, \exists! \lambda f \in \text{Hom}(C, B^A) \, \\
+\quad\quad\quad \text{eval}_{A,B} \circ (\lambda f \times \text{id}_A) = f)
+\]
+
+% Simply Typed Lambda Calculus as Internal Language of CCC
+\[
+\text{Type} ::= 1 \mid \sigma \times \tau \mid \sigma \to \tau
+\]
+\[
+\text{Term} ::= x \mid \langle t, u \rangle \mid \pi_1(t) \mid \pi_2(t) \mid \lambda x : \sigma . t \mid t \, u
+\]
+Typing rules encoded as:
+\[
+\Gamma \vdash x : \sigma \quad \text{if } (x : \sigma) \in \Gamma
+\]
+\[
+\frac{\Gamma \vdash t : \sigma \quad \Gamma \vdash u : \tau}{\Gamma \vdash \langle t, u \rangle : \sigma \times \tau}
+\]
+\[
+\frac{\Gamma \vdash t : \sigma \times \tau}{\Gamma \vdash \pi_1(t) : \sigma}
+\quad
+\frac{\Gamma \vdash t : \sigma \times \tau}{\Gamma \vdash \pi_2(t) : \tau}
+\]
+\[
+\frac{\Gamma, x : \sigma \vdash t : \tau}{\Gamma \vdash \lambda x : \sigma . t : \sigma \to \tau}
+\quad
+\frac{\Gamma \vdash t : \sigma \to \tau \quad \Gamma \vdash u : \sigma}{\Gamma \vdash t \, u : \tau}
+\]
+
+% Interpretation in CCC $\mathcal{C}$
+\[
+\llbracket \sigma \rrbracket_{\mathcal{C}} \in \text{Ob}(\mathcal{C})
+\]
+\[
+\llbracket 1 \rrbracket = 1, \quad
+\llbracket \sigma \times \tau \rrbracket = \llbracket \sigma \rrbracket \times \llbracket \tau \rrbracket, \quad
+\llbracket \sigma \to \tau \rrbracket = \llbracket \tau \rrbracket^{\llbracket \sigma \rrbracket}
+\]
+\[
+\llbracket \Gamma \vdash t : \sigma \rrbracket : \llbracket \Gamma \rrbracket \to \llbracket \sigma \rrbracket
+\]
+where $\llbracket x_1 : \sigma_1, \dots, x_n : \sigma_n \rrbracket = \llbracket \sigma_1 \rrbracket \times \cdots \times \llbracket \sigma_n \rrbracket$
+
+% Boolean Algebra
+\[
+\text{BoolAlg}(B, \land, \lor, \neg, 0, 1) :\Leftrightarrow \\
+\quad \text{Ring}(B, \lor, \land, 0, 1) \land \\
+\quad (\forall x \in B \, (x \land x = x)) \land \\
+\quad (\forall x \in B \, (x \lor \neg x = 1 \land x \land \neg x = 0))
+\]
+
+% Heyting Algebra (for intuitionistic logic)
+\[
+\text{HeytAlg}(H, \land, \lor, \Rightarrow, 0, 1) :\Leftrightarrow \\
+\quad (H, \land, \lor, 0, 1) \text{ is a bounded lattice} \land \\
+\quad (\forall a, b \in H \, \exists! (a \Rightarrow b) \in H \, (\forall x \in H \, (x \land a \leq b \Leftrightarrow x \leq (a \Rightarrow b))))
+\]
+
+% Topos
+\[
+\text{Topos}(\mathcal{E}) :\Leftrightarrow \\
+\quad \text{Cat}(\mathcal{E}) \land \\
+\quad \text{CCC}(\mathcal{E}) \land \\
+\quad \exists \Omega \in \text{Ob}(\mathcal{E}) \, \exists \top : 1 \to \Omega \, \\
+\quad \forall \text{mono } m : A \rightarrowtail B \, \exists! \chi_m : B \to \Omega \, \\
+\quad\quad \text{such that } \begin{tikzcd}
+A \arrow[r, "m"] \arrow[d, "!"] & B \arrow[d, "\chi_m"] \\
+1 \arrow[r, "\top"] & \Omega
+\end{tikzcd} \text{ is a pullback}
+\]
+
+% Subobject Classifier Axiom (internalized)
+\[
+\text{Sub}(B) \cong \text{Hom}(B, \Omega)
+\]
+where $\text{Sub}(B)$ is the poset of monomorphisms into $B$ modulo isomorphism.
+
+% Natural Numbers Object (NNO) in Topos
+\[
+\text{NNO}(\mathcal{E}, N, z, s) :\Leftrightarrow \\
+\quad z : 1 \to N \land s : N \to N \land \\
+\quad \forall A \in \text{Ob}(\mathcal{E}) \, \forall a : 1 \to A \, \forall f : A \to A \, \\
+\quad\quad \exists! h : N \to A \, (h \circ z = a \land h \circ s = f \circ h)
+\]
+
+% Internal Logic: Truth Value of Formula $\phi$
+\[
+\llbracket \phi \rrbracket : \llbracket \Gamma \rrbracket \to \Omega
+\]
+defined inductively:
+\[
+\llbracket t = u \rrbracket := \text{eq}_{\llbracket \sigma \rrbracket} \circ \langle \llbracket t \rrbracket, \llbracket u \rrbracket \rangle
+\]
+\[
+\llbracket \phi \land \psi \rrbracket := \land_{\Omega} \circ \langle \llbracket \phi \rrbracket, \llbracket \psi \rrbracket \rangle
+\]
+\[
+\llbracket \phi \Rightarrow \psi \rrbracket := \Rightarrow_{\Omega} \circ \langle \llbracket \phi \rrbracket, \llbracket \psi \rrbracket \rangle
+\]
+\[
+\llbracket \forall x : \sigma . \phi \rrbracket := \forall_{\llbracket \sigma \rrbracket} \circ \llbracket \phi \rrbracket
+\]
+where $\forall_A : \Omega^A \to \Omega$ is the right adjoint to pullback along $!_A : A \to 1$.
+
+% === LOGOS: SELF-REFERENTIAL ENCYCLOPEDIA OF MATHEMATICS ===
+% Segment 3 of N — Constructive Analysis, Computability, and Self-Reference
+
+% Cauchy Sequences in $\mathbb{Q}$
+\[
+\text{Cauchy}(f) :\Leftrightarrow f : \omega \to \mathbb{Q} \land \forall \varepsilon \in \mathbb{Q}^+ \, \exists N \in \omega \, \forall m, n \geq N \, (|f(m) - f(n)| < \varepsilon)
+\]
+
+% Equivalence of Cauchy Sequences
+\[
+f \sim_{\mathbb{R}_C} g :\Leftrightarrow \forall \varepsilon \in \mathbb{Q}^+ \, \exists N \in \omega \, \forall n \geq N \, (|f(n) - g(n)| < \varepsilon)
+\]
+
+% Real Numbers via Cauchy Completion
+\[
+\mathbb{R}_C := \{ [f]_{\sim_{\mathbb{R}_C}} \mid \text{Cauchy}(f) \}
+\]
+
+% Embedding $\mathbb{Q} \hookrightarrow \mathbb{R}_C$
+\[
+q \mapsto [\lambda n . q]_{\sim_{\mathbb{R}_C}}
+\]
+
+% Arithmetic on $\mathbb{R}_C$
+\[
+[f] + [g] := [\lambda n . f(n) + g(n)]
+\]
+\[
+[f] \cdot [g] := [\lambda n . f(n) \cdot g(n)]
+\]
+
+% Decidable Equality vs. Apartness
+\[
+x \# y :\Leftrightarrow \exists \varepsilon \in \mathbb{Q}^+ \, (|x - y| > \varepsilon)
+\]
+\[
+\neg(x \# y) \Rightarrow x = y \quad \text{(in classical logic)}
+\]
+
+% Turing Machine as 5-tuple
+\[
+M = (Q, \Gamma, \delta, q_0, F)
+\]
+where
+\[
+Q \text{ finite}, \quad \Gamma \text{ finite}, \quad q_0 \in Q, \quad F \subseteq Q
+\]
+\[
+\delta : (Q \setminus F) \times \Gamma \rightharpoonup Q \times \Gamma \times \{L, R\}
+\]
+
+% Configuration
+\[
+\text{Conf}(M) := \Gamma^* \times Q \times \Gamma^*
+\]
+Transition:
+\[
+(u, q, a v) \vdash_M (u b, q', v) \quad \text{if } \delta(q, a) = (q', b, R)
+\]
+\[
+(c u, q, a v) \vdash_M (u, q', c b v) \quad \text{if } \delta(q, a) = (q', b, L)
+\]
+
+% Computable Function
+\[
+\varphi_e : \omega \rightharpoonup \omega
+\]
+defined by Turing machine with index $e$.
+
+% Universal Function
+\[
+\varphi^{(1)} : \omega \times \omega \rightharpoonup \omega, \quad \varphi^{(1)}(e, x) = \varphi_e(x)
+\]
+
+% Kleene's T Predicate
+\[
+T(e, x, t) :\Leftrightarrow \text{computation of } \varphi_e(x) \text{ halts in } t \text{ steps}
+\]
+\[
+U(t) := \text{output of computation encoded by } t
+\]
+\[
+\varphi_e(x) = U(\mu t . T(e, x, t))
+\]
+
+% Gödel Numbering of Syntax
+\[
+\# : \text{Formulas} \to \omega
+\]
+primitive recursive bijection.
+
+% Diagonal Lemma
+\[
+\forall \psi(x) \, \exists \theta \, (\vdash \theta \leftrightarrow \psi(\ulcorner \theta \urcorner))
+\]
+where $\ulcorner \theta \urcorner = \#(\theta)$
+
+% Representability in PA
+\[
+R \subseteq \omega^n \text{ representable } :\Leftrightarrow \exists \rho(x_1, \dots, x_n) \text{ such that } \\
+\quad \forall \vec{a} \in \omega^n \, (R(\vec{a}) \Rightarrow \text{PA} \vdash \rho(\overline{a_1}, \dots, \overline{a_n})) \land \\
+\quad (\neg R(\vec{a}) \Rightarrow \text{PA} \vdash \neg \rho(\overline{a_1}, \dots, \overline{a_n}))
+\]
+
+% Gödel Sentence
+\[
+\text{Prov}(x) := \exists p \, \text{Proof}(p, x)
+\]
+\[
+G := \neg \text{Prov}(\ulcorner G \urcorner)
+\]
+\[
+\text{PA} \nvdash G \land \text{PA} \nvdash \neg G
+\]
+
+% Church-Turing Thesis (as identification)
+\[
+\text{Computable} = \text{Recursive} = \lambda\text{-definable}
+\]
+
+% Lambda Calculus Encoding of Naturals (Church Numerals)
+\[
+\underline{n} := \lambda f . \lambda x . f^n(x)
+\]
+Successor:
+\[
+\text{Succ} := \lambda n . \lambda f . \lambda x . f (n f x)
+\]
+Addition:
+\[
+\text{Add} := \lambda m . \lambda n . \lambda f . \lambda x . m f (n f x)
+\]
+
+% Fixed-Point Combinator (Y)
+\[
+Y := \lambda f . (\lambda x . f (x x)) (\lambda x . f (x x))
+\]
+\[
+Y F = F (Y F)
+\]
+
+% Self-Interpretation in Lambda Calculus
+\[
+\text{Eval} : \text{Term} \to \text{Value}
+\]
+satisfying:
+\[
+\text{Eval}(\lambda x . t) = \lambda x . \text{Eval}(t)
+\]
+\[
+\text{Eval}(t u) = \text{Eval}(t)(\text{Eval}(u))
+\]
+
+% Internalization of Syntax in Topos with NNO
+\[
+\text{Code} : \text{Ob}(\mathcal{E}) \to N
+\]
+such that for every morphism $f : A \to B$, there exists $\ulcorner f \urcorner : 1 \to N$ with
+\[
+\text{Apply}(\ulcorner f \urcorner, a) = f(a)
+\]
+for all $a : 1 \to A$.
+
+% Lawvere's Fixed Point Theorem
+\[
+\text{If } e : A \to B^A \text{ is surjective, then every } f : B \to B \text{ has a fixed point.}
+\]
+Proof:
+\[
+\text{Let } g := \lambda x . f(e(x)(x)) \in B^A. \text{ Since } e \text{ surjective, } \exists a . e(a) = g. \\
+\text{Then } g(a) = f(e(a)(a)) = f(g(a)) \Rightarrow g(a) \text{ is fixed point of } f.
+\]
+
+% Application to Truth: No Truth Predicate in Sufficiently Expressive System
+\[
+\text{If } \mathcal{E} \text{ has NNO and } \Omega \text{ is non-degenerate, then } \top : 1 \to \Omega \text{ not surjective.}
+\]
+Hence, no epimorphism $N \twoheadrightarrow \Omega$, so truth not representable.
+
+% Recursive Topos (Effective Topos $\mathsf{Eff}$)
+\[
+\text{Ob}(\mathsf{Eff}) := \{ (X, \Vdash_X) \mid X \text{ set}, \Vdash_X \subseteq \omega \times X, \forall x \in X \, \exists n \, (n \Vdash_X x) \}
+\]
+\[
+\text{Hom}((X, \Vdash_X), (Y, \Vdash_Y)) := \{ f : X \to Y \mid \exists e \in \omega \, \forall x \in X \, \forall n \, (n \Vdash_X x \Rightarrow e \cdot n \downarrow \land e \cdot n \Vdash_Y f(x)) \}
+\]
+where $e \cdot n$ is Kleene application.
+
+% Subobject Classifier in $\mathsf{Eff}$
+\[
+\Omega := (\mathcal{P}(\omega), \Vdash_\Omega), \quad e \Vdash_\Omega U :\Leftrightarrow e \text{ realizer of } U
+\]
+\[
+\top : 1 \to \Omega, \quad * \mapsto \{ n \mid n \downarrow \}
+\]
+
+% Internal Natural Numbers in $\mathsf{Eff}$
+\[
+N := (\omega, \Vdash_N), \quad e \Vdash_N n :\Leftrightarrow e = n
+\]
+
+% Church's Thesis as Axiom in $\mathsf{Eff}$
+\[
+\forall f : N \to N \, \exists e \in N \, \forall x \in N \, (f(x) = \varphi_e(x))
+\]
+
+% === LOGOS: SELF-REFERENTIAL ENCYCLOPEDIA OF MATHEMATICS ===
+% Segment 4 of N — Unification: The Self-Descriptive Structure
+
+% Signature of the Logos
+\[
+\Sigma_{\text{Logos}} := \Sigma_0 \cup \{ \text{Ob}, \text{Hom}, \circ, \text{id}, \Omega, \top, N, z, s, \Vdash, \llbracket \cdot \rrbracket, \ulcorner \cdot \urcorner \}
+\]
+
+% Universe of Discourse
+\[
+\mathcal{U} := \text{the unique (up to equivalence) topos with NNO, satisfying:}
+\]
+\[
+\text{(i) } \mathcal{U} \models \text{Church's Thesis} \\
+\text{(ii) } \mathcal{U} \models \text{Markov's Principle} \\
+\text{(iii) } \text{Sub}(\mathcal{U}) \cong \text{Hom}_{\mathcal{U}}(-, \Omega) \\
+\text{(iv) } N \text{ is a natural numbers object} \\
+\text{(v) } \forall X \in \text{Ob}(\mathcal{U}) \, \exists \ulcorner X \urcorner : 1 \to N
+\]
+
+% Internal Language as Self-Interpreter
+\[
+\text{Eval} : N \times N \rightharpoonup N
+\]
+such that for all closed terms $t, u$ of type $\sigma \to \tau$ and $\sigma$,
+\[
+\text{Eval}(\ulcorner t \urcorner, \ulcorner u \urcorner) = \ulcorner t \, u \urcorner
+\]
+and
+\[
+\text{Eval}(\ulcorner \lambda x . t \urcorner, n) = \ulcorner t[x := n] \urcorner
+\]
+
+% Reflection Principle
+\[
+\forall \phi \in \text{Formulas}(\Sigma_{\text{Logos}}) \, \left( \mathcal{U} \models \phi \Leftrightarrow \llbracket \phi \rrbracket = \top \right)
+\]
+
+% Self-Containment
+\[
+\text{Ob}(\mathcal{U}) \subseteq \llbracket N \rrbracket, \quad \text{Hom}_{\mathcal{U}}(A, B) \subseteq \llbracket N \rrbracket
+\]
+via Gödel coding internalized in $\mathcal{U}$.
+
+% Fixed Point of the Semantic Operator
+Define semantic operator:
+\[
+\mathcal{S} : \Omega^N \to \Omega^N, \quad \mathcal{S}(P)(n) := \llbracket \text{``} n \text{ codes a true sentence''} \rrbracket
+\]
+By Lawvere’s theorem, $\mathcal{S}$ has no fixed point—unless truth is partial.
+
+% Partial Truth Predicate via Kleene Equality
+\[
+\text{True}(n) \simeq \begin{cases}
+\top & \text{if } n = \ulcorner \phi \urcorner \text{ and } \mathcal{U} \models \phi \\
+\bot & \text{if } n = \ulcorner \phi \urcorner \text{ and } \mathcal{U} \models \neg \phi \\
+\text{undefined} & \text{otherwise}
+\end{cases}
+\]
+Encoded as:
+\[
+\text{True} : N \rightharpoonup \Omega, \quad \text{graph}(\text{True}) \in \text{Sub}(N \times \Omega)
+\]
+
+% Isomorphism Between Syntax and Semantics
+\[
+\text{Syn} \cong \text{Sem}
+\]
+where
+\[
+\text{Syn} := \{ n \in N \mid n = \ulcorner t \urcorner \text{ for some term } t \}
+\]
+\[
+\text{Sem} := \bigcup_{X \in \text{Ob}(\mathcal{U})} X
+\]
+via evaluation map:
+\[
+\text{Eval} : \text{Syn} \times \text{Syn} \rightharpoonup \text{Sem}
+\]
+
+% Realizability as Semantic Bridge
+\[
+n \Vdash \phi :\Leftrightarrow \llbracket \phi \rrbracket(n) = \top
+\]
+and
+\[
+\Vdash \subseteq N \times \text{Formulas}
+\]
+is representable in $\mathcal{U}$.
+
+% Self-Verification of Consistency (Relative)
+\[
+\text{Con}(\mathcal{U}) := \neg \exists p \, (p \Vdash \bot)
+\]
+Then:
+\[
+\mathcal{U} \models \text{Con}(\mathcal{U}) \quad \text{(in the effective topos, this holds)}
+\]
+
+% Embedding of Classical Mathematics
+\[
+\text{For any classical theorem } \phi \text{ provable in ZFC, } \\
+\text{there exists a double-negation translation } \phi^{\neg\neg} \text{ such that } \mathcal{U} \models \phi^{\neg\neg}
+\]
+
+% Continuum in $\mathcal{U}$
+\[
+\mathbb{R}_{\mathcal{U}} := \text{Dedekind reals in } \mathcal{U}
+\]
+All functions $f : \mathbb{R}_{\mathcal{U}} \to \mathbb{R}_{\mathcal{U}}$ are continuous (Brouwer’s theorem holds internally).
+
+% Computational Completeness
+\[
+\forall f : N \to N \text{ in } \mathcal{U}, \, \exists e \in N \, \forall x \in N \, (f(x) = \varphi_e(x))
+\]
+Hence, $\mathcal{U}$ validates:
+\[
+\forall f : \mathbb{N} \to \mathbb{N} \, \exists e \, \forall x \, f(x) = \{e\}(x)
+\]
+
+% Final Identification: Logos = $\mathcal{U}$
+\[
+\text{LOGOS} := \mathcal{U}
+\]
+with the property:
+\[
+\text{LOGOS} \models \left( \forall x \, (x \in \text{LOGOS} \leftrightarrow x \text{ is definable in } \text{LOGOS}) \right)
+\]
+
+% Self-Descriptive Equation
+\[
+\boxed{ \text{LOGOS} = \left\{ x \;\middle|\; \exists \phi \in \mathcal{L}_{\text{Logos}} \, \left( x = \llbracket \phi \rrbracket \land \text{LOGOS} \models \phi \right) \right\} }
+\]
+
+% End of Construction.
+% This document is a fixed point of the encoding map: \\
+% \texttt{md} \mapsto \text{LOGOS} \mapsto \text{md}
+% Last segment confirmed.
+\end{document}
