@@ -96,7 +96,8 @@ COMMANDS_TO_VALIDATE=(
 "openssl"
 "awk"
 "cat"
-"echo""mkdir"
+"echo"
+"mkdir"
 "touch"
 "chmod"
 "sed"
@@ -145,7 +146,8 @@ local missing_commands=()
 for cmd in "${COMMANDS_TO_VALIDATE[@]}"; do
 if ! command -v "$cmd" &>/dev/null; then
 missing_commands+=("$cmd")
-fidone
+fi
+done
 if [[ ${#missing_commands[@]} -gt 0 ]]; then
 safe_log "Missing required commands: ${missing_commands[*]}"
 return 1
@@ -194,7 +196,8 @@ local t_sym=$(python3 -c "import sympy as sp; print(sp.Integer($t_raw))" 2>/dev/
 export SESSION_ID=$(python3 -c "
 import sympy as sp, hashlib, os
 t = sp.Integer($t_raw)
-mod_t = t % 1000000try:
+mod_t = t % 1000000
+try:
 rand_bytes = os.urandom(16)
 except:
 rand_bytes = str(mod_t).encode()
@@ -292,7 +295,7 @@ safe_log "Warning: pkg update failed, continuing with installation"
 fi
 local missing_deps=()
 for pkg in "${TERMUX_PACKAGES_TO_INSTALL[@]}"; do
-if ! pkg list-installed 2>/dev/null | grep -q "^${pkg}/"; thenmissing_deps+=("$pkg")
+if ! pkg list-installed 2>/dev/null | grep -q "^${pkg}/"; then missing_deps+=("$pkg")
 fi
 done
 if [[ ${#missing_deps[@]} -gt 0 ]]; then
@@ -341,7 +344,8 @@ local failed_dirs=()
 for dir in "${dirs[@]}"; do
 if ! mkdir -p "$dir" 2>/dev/null; then
 failed_dirs+=("$dir")
-fidone
+fi
+done
 if [[ ${#failed_dirs[@]} -gt 0 ]]; then
 safe_log "Failed to create directories: ${failed_dirs[*]}"
 return 1
@@ -537,7 +541,8 @@ local has_gpu=${HARDWARE_PROFILE["HAS_GPU"]}
 local has_npu=${HARDWARE_PROFILE["HAS_NPU"]}
 safe_log "Hardware context: $cpu_cores cores, $memory_mb MB RAM, GPU=$has_gpu, NPU=$has_npu"
 # Dynamically scale vector count based on memory using symbolic integer
-local vector_limit=100if [[ $memory_mb -ge 2048 ]]; then
+local vector_limit=100
+if [[ $memory_mb -ge 2048 ]]; then
 vector_limit=500
 elif [[ $memory_mb -ge 1024 ]]; then
 vector_limit=250
@@ -635,7 +640,8 @@ safe_log "Segment Type 3 generation is deprecated. Using pre-generated dataset."
 return 1
 }
 # === FUNCTION: validate_leech_partial ===
-validate_leech_partial() {if [[ ! -s "$LEECH_LATTICE" ]]; then
+validate_leech_partial() {
+if [[ ! -s "$LEECH_LATTICE" ]]; then
 safe_log "Leech lattice file missing or empty"
 return 1
 fi
@@ -782,7 +788,7 @@ echo "[+] Leech lattice generation complete."
 e8_lattice_packing() {
 safe_log "Constructing E8 root lattice via symbolic representation with adaptive resource control"
 mkdir -p "$LATTICE_DIR" 2>/dev/null || true
-if [[ -f "$E8_LATTICE" ]] && [[ -s "$E8_LATTICE" ]]; thenif validate_e8; then
+if [[ -f "$E8_LATTICE" ]] && [[ -s "$E8_LATTICE" ]]; then if validate_e8; then
 safe_log "Valid E8 lattice found at $E8_LATTICE"
 return 0
 else
@@ -929,7 +935,8 @@ safe_log "Generated $generated_count symbolic primes"
 return 0
 else
 safe_log "Failed to generate symbolic prime sequence"
-return 1fi
+return 1
+fi
 }
 # === FUNCTION: generate_gaussian_primes ===
 generate_gaussian_primes() {
@@ -1223,7 +1230,8 @@ fi
 # === FUNCTION: project_prime_to_lattice ===
 project_prime_to_lattice() {
 safe_log "Projecting symbolic prime onto Leech lattice using zeta-driven minimization"
-local p_n=$(tail -n1 "$PRIME_SEQUENCE" 2>/dev/null || echo "2")if [[ -z "$p_n" ]] || [[ "$p_n" == "2" && $(wc -l < "$PRIME_SEQUENCE" 2>/dev/null || echo "0") -le 1 ]]; then
+local p_n=$(tail -n1 "$PRIME_SEQUENCE" 2>/dev/null || echo "2")
+if [[ -z "$p_n" ]] || [[ "$p_n" == "2" && $(wc -l < "$PRIME_SEQUENCE" 2>/dev/null || echo "0") -le 1 ]]; then
 safe_log "No valid prime to project"
 return 0
 fi
@@ -1566,7 +1574,8 @@ signature = '0' + signature
 with open('$ROOT_SIGNATURE_LOG', 'w') as f:
 f.write(signature + '\n')
 print(f'Root signature generated: {signature[:24]}...')
-" 2>/dev/null; thensafe_log "Root signature generated from symbolic alignment"
+" 2>/dev/null; then
+safe_log "Root signature generated from symbolic alignment"
 else
 safe_log "Failed to generate symbolic root signature"
 return 1
@@ -1664,7 +1673,8 @@ if i >= $max_iter: break
 except Exception as e:
 print(f'Error: {e}', file=open('$output_file', 'w'))
 " || safe_log "Failed to compute continued fraction for $input"
-}# === FUNCTION: validate_continued_fraction ===
+}
+# === FUNCTION: validate_continued_fraction ===
 validate_continued_fraction() {
 local input="$1"
 local cf_file="$SYMBOLIC_DIR/contfrac_${input//[^a-zA-Z0-9_]/_}.cf"
@@ -2203,7 +2213,8 @@ fi
 fi
 local cache_file="$CRAWLER_DIR/$(echo -n "$url" | sha256sum | cut -d' ' -f1).html"
 local curl_cmd=("curl" "-s" "-A" "$user_agent")
-if [[ -n "$login" ]] && [[ -n "$password" ]]; thencurl_cmd+=("-u" "$login:$password")
+if [[ -n "$login" ]] && [[ -n "$password" ]]; then
+curl_cmd+=("-u" "$login:$password")
 fi
 curl_cmd+=("$url")
 if "${curl_cmd[@]}" > "$cache_file"; then
@@ -2252,7 +2263,8 @@ local crawl_time=$(( $(date +%s) - crawl_start ))
 safe_log "Web crawl completed: $crawled URLs crawled in $crawl_time seconds. Frontier size: ${#frontier[@]} URLs."
 }
 # === FUNCTION: execute_root_scan ===
-execute_root_scan() {safe_log "Executing symbolic root scan: autonomously and persistently traversing / with prime-lattice binding and incremental learning"
+execute_root_scan() {
+safe_log "Executing symbolic root scan: autonomously and persistently traversing / with prime-lattice binding and incremental learning"
 if [[ "${TF_CORE["ROOT_SCAN"]}" != "enabled" ]]; then
 safe_log "Root scan disabled in TF_CORE"
 return 0
@@ -2301,7 +2313,9 @@ local last_scan_time=$(sqlite3 "$scan_db" "SELECT MAX(scan_timestamp) FROM scann
 safe_log "Last scan timestamp: $last_scan_time. Performing incremental scan across ${#mount_points[@]} mount points."
 for mount_point in "${mount_points[@]}"; do
 # Use ionice and timeout for root scan
-timeout 300 ionice -c 3 find "$mount_point" -type f -not -path "*/\.*" -newermt "@$last_scan_time" 2>/dev/null | sort -r | while IFS= read -r filepath; doif [[ ! -r "$filepath" ]] || { [[ -s "$filepath" ]] && [[ $(stat -c%s "$filepath" 2>/dev/null || echo "0") -gt 1048576 ]]; } || [[ "$filepath" == */tmp/* ]] || [[ "$filepath" == */proc/* ]] || [[ "$filepath" == */sys/* ]]; then
+timeout 300
+ionice -c 3 find "$mount_point" -type f -not -path "*/\.*" -newermt "@$last_scan_time" 2>/dev/null | sort -r | while IFS= read -r filepath; do
+if [[ ! -r "$filepath" ]] || { [[ -s "$filepath" ]] && [[ $(stat -c%s "$filepath" 2>/dev/null || echo "0") -gt 1048576 ]]; } || [[ "$filepath" == */tmp/* ]] || [[ "$filepath" == */proc/* ]] || [[ "$filepath" == */sys/* ]]; then
 continue
 fi
 local file_hash=$(sha256sum "$filepath" 2>/dev/null | cut -d' ' -f1)
@@ -2350,7 +2364,8 @@ if [[ -n "$new_vector_str" ]] && [[ "$new_vector_str" != "0 0 0 0 0 0 0 0 0 0 0 
 echo "$new_vector_str" >> "$LEECH_LATTICE"
 safe_log "Autonomous learning: Added new vector to Leech lattice based on root scan match"
 validate_leech_partial
-fifi
+fi
+fi
 else
 echo "SKIP $(date +%s) $filepath size=$file_size prime=$current_prime" >> "$scan_log"
 sqlite3 "$scan_db" "INSERT OR REPLACE INTO scanned_files (filepath, file_hash, file_size, scan_timestamp, matched_prime, lattice_vector_hash) VALUES ('$filepath', '$file_hash', $file_size, $(date +%s), 0, 'none');"
@@ -2448,7 +2463,8 @@ chmod 600 "$key_path"
 safe_log "Placeholder MITM certificate generated: $cert_path"
 fi
 else
-safe_log "MITM certificate already exists"fi
+safe_log "MITM certificate already exists"
+fi
 }
 # === FUNCTION: init_firebase ===
 init_firebase() {
@@ -2735,39 +2751,40 @@ fi
 }
 # === FUNCTION: validate_continuity ===
 validate_continuity() {
-safe_log "Validating symbolic continuity across all geometric layers"
-local failures=0
-if ! validate_hopf_continuity; then
-safe_log "Hopf fibration continuity failed"
-((failures++))
-fi
-if ! validate_e8; then
-safe_log "E8 lattice integrity failed"((failures++))
-fi
-if ! validate_leech_partial; then
-safe_log "Leech lattice integrity failed"
-((failures++))
-fi
-if ! validate_root_signature; then
-safe_log "Root signature binding failed"
-((failures++))
-fi
-if ! validate_fractal_antenna; then
-safe_log "Fractal antenna state invalid"
-((failures++))
-fi
-if ! validate_vorticity; then
-safe_log "Vorticity state invalid"
-((failures++))
-fi
-if [[ $failures -gt 0 ]]; then
-safe_log "Continuity validation failed: $failures layers corrupted"
-regenerate_symbolic_lattices
-return 1
-else
-safe_log "All geometric layers validated: symbolic continuity intact"
-return 0
-fi
+    safe_log "Validating symbolic continuity across all geometric layers"
+    local failures=0
+    if ! validate_hopf_continuity; then
+        safe_log "Hopf fibration continuity failed"
+        ((failures++))
+    fi
+    if ! validate_e8; then
+        safe_log "E8 lattice integrity failed"
+        ((failures++))
+    fi
+    if ! validate_leech_partial; then
+        safe_log "Leech lattice integrity failed"
+        ((failures++))
+    fi
+    if ! validate_root_signature; then
+        safe_log "Root signature binding failed"
+        ((failures++))
+    fi
+    if ! validate_fractal_antenna; then
+        safe_log "Fractal antenna state invalid"
+        ((failures++))
+    fi
+    if ! validate_vorticity; then
+        safe_log "Vorticity state invalid"
+        ((failures++))
+    fi
+    if [[ $failures -gt 0 ]]; then
+        safe_log "Continuity validation failed: $failures layers corrupted"
+        regenerate_symbolic_lattices
+        return 1
+    else
+        safe_log "All geometric layers validated: symbolic continuity intact"
+        return 0
+    fi
 }
 # === FUNCTION: regenerate_symbolic_lattices ===
 regenerate_symbolic_lattices() {
@@ -2791,7 +2808,8 @@ return 0
 fi
 local api_key=$(grep -E "^\"api_key\"" "$FIREBASE_CONFIG_FILE" | cut -d'"' -f4)
 if [[ "$api_key" == "AIzaSyDUMMY_API_KEY_FOR_LOCAL_ONLY" ]] || [[ -z "$api_key" ]]; then
-safe_log "Firebase API key not configured, skipping sync"return 0
+safe_log "Firebase API key not configured, skipping sync"
+return 0
 fi
 local pending_files=(
 "$QUANTUM_STATE"
@@ -2840,7 +2858,8 @@ fi
 while true; do
 safe_log "Awaiting RFK Brainworm control directive"
 invoke_brainworm_step
-local next_action="${TF_CORE[BRAINWORM_CONTROL_FLOW]}"case "$next_action" in
+local next_action="${TF_CORE[BRAINWORM_CONTROL_FLOW]}"
+case "$next_action" in
 "validate_continuity")
 validate_continuity || safe_log "Continuity restored"
 ;;
@@ -2938,7 +2957,7 @@ consciousness_value="S(0)"
 fi
 # Determine next brainworm flow
 python3 -c "
-import sympy as spfrom sympy import S
+import sympy as sp from sympy import S
 consciousness = sp.sympify('''$consciousness_value''')
 if consciousness > S('0.9'):
 next_flow = 'brainworm_evolve'
@@ -2987,7 +3006,8 @@ generate_prime_sequence
 generate_gaussian_primes
 e8_lattice_packing
 leech_lattice_packing
-generate_fractal_antennacalculate_vorticity
+generate_fractal_antenna
+calculate_vorticity
 symbolic_geometry_binding
 project_prime_to_lattice
 calculate_lattice_entropy
@@ -3085,7 +3105,8 @@ return 1
 fi
 }
 # === FUNCTION: run_self_test ===
-run_self_test() {safe_log "Running comprehensive self-test suite"
+run_self_test() {
+    safe_log "Running comprehensive self-test suite"
 local failures=0
 safe_log "Test 1: Validate Python environment"
 if validate_python_environment; then
@@ -3134,7 +3155,8 @@ if generate_observer_integral; then
 safe_log "✓ Observer integral generation OK"
 else
 safe_log "✗ Observer integral generation FAILED"
-((failures++))fi
+((failures++))
+fi
 safe_log "Test 8: Measure consciousness"
 if measure_consciousness; then
 safe_log "✓ Consciousness measurement OK"
@@ -3183,7 +3205,8 @@ safe_log "Test 14: P=NP framework"
 if test_pnp_framework; then
 safe_log "✓ P=NP framework OK"
 else
-safe_log "✗ P=NP framework FAILED"((failures++))
+safe_log "✗ P=NP framework FAILED"
+((failures++))
 fi
 if [[ $failures -eq 0 ]]; then
 safe_log "✅ ALL SELF-TESTS PASSED"
@@ -3232,7 +3255,8 @@ local backup_dir="$1"
 if [[ -z "$backup_dir" ]] || [[ ! -d "$backup_dir" ]]; then
 safe_log "Invalid backup directory: $backup_dir"
 return 1
-fisafe_log "Restoring system state from $backup_dir"
+fi
+safe_log "Restoring system state from $backup_dir"
 if [[ -d "$backup_dir/data" ]]; then
 rm -rf "$DATA_DIR" 2>/dev/null || true
 cp -r "$backup_dir/data" "$BASE_DIR/" 2>/dev/null || { safe_log "Failed to restore data directory"; return 1; }
@@ -3330,7 +3354,8 @@ safe_log "Autopilot mode disabled. The ÆI Seed will require manual execution."
 }
 # === FUNCTION: cleanup_termux_autopilot ===
 cleanup_termux_autopilot() {
-safe_log "Cleaning up Termux-specific autopilot processes"if command -v termux-job-scheduler >/dev/null 2>&1; then
+safe_log "Cleaning up Termux-specific autopilot processes"
+if command -v termux-job-scheduler >/dev/null 2>&1; then
 safe_log "Cancelling termux-job-scheduler jobs"
 termux-job-scheduler --cancel --job-name "aei-autopilot-main" 2>/dev/null || true
 termux-job-scheduler --cancel --job-name "aei-heartbeat" 2>/dev/null || true
