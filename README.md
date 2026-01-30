@@ -1,6 +1,6 @@
 # **Demo**
 
-https://chat.qwen.ai/s/22a1fb33-ccf6-4268-a6a7-b6b444f86525
+https://chat.qwen.ai/s/520d4758-29ad-4163-91cd-885c55b18bec
 
 # Trancelinguistic Intelligence: Beyond the AGI Mirage
 
