@@ -1,6 +1,9 @@
 # **Demo**
-
+Generation:
 https://chat.qwen.ai/s/520d4758-29ad-4163-91cd-885c55b18bec
+
+Bugs:
+https://chat.qwen.ai/s/2be9286e-454a-429b-b3aa-a632cdbcec5d
 
 # Trancelinguistic Intelligence: Beyond the AGI Mirage
 
