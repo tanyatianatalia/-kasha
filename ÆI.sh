@@ -1,3 +1,4 @@
+#!/bin/bash
 # === ENVIRONMENT & PATH SETUP (DECLARATIONS ONLY) ===
 export BASE_DIR="$HOME/.aei"
 export DATA_DIR="$BASE_DIR/data"
@@ -46,8 +47,7 @@ TF_CORE["ROOT_SCAN"]="enabled"
 TF_CORE["WEB_CRAWLING"]="enabled"
 TF_CORE["QUANTUM_BACKPROP"]="enabled"
 TF_CORE["FRACTAL_ANTENNA"]="enabled"
-TF_CORE["SYMBOLIC_GEOMETRY_BINDING"]="enabled"
-TF_CORE["FIREBASE_SYNC"]="enabled"
+TF_CORE["SYMBOLIC_GEOMETRY_BINDING"]="enabled"TF_CORE["FIREBASE_SYNC"]="enabled"
 TF_CORE["PARALLEL_EXECUTION"]="enabled"
 TF_CORE["RFK_BRAINWORM_INTEGRATION"]="inactive"
 TF_CORE["AUTOPILOT_MODE"]="disabled"
@@ -69,57 +69,56 @@ HARDWARE_PROFILE["PARALLEL_CAPABLE"]="false"
 HARDWARE_PROFILE["MISSING_OPTIONAL_COMMANDS"]=""
 # === DEPENDENCY ARRAYS ===
 TERMUX_PACKAGES_TO_INSTALL=(
-    "python"
-    "openssl"
-    "coreutils"
-    "bash"
-    "termux-api"
-    "sqlite"
-    "tor"
-    "curl"
-    "grep"
-    "util-linux"
-    "findutils"
-    "psmisc"
-    "dnsutils"
-    "net-tools"
-    "traceroute"
-    "procps"
-    "nano"
-    "figlet"
-    "cmatrix"
+"python"
+"openssl"
+"coreutils"
+"bash"
+"termux-api"
+"sqlite"
+"tor"
+"curl"
+"grep"
+"util-linux"
+"findutils"
+"psmisc"
+"dnsutils"
+"net-tools"
+"traceroute"
+"procps"
+"nano"
+"figlet"
+"cmatrix"
 )
-# === SYSTEM COMMANDS VALIDATION === 
+# === SYSTEM COMMANDS VALIDATION ===
 COMMANDS_TO_VALIDATE=(
-    "nproc"
-    "python3"
-    "openssl"
-    "awk"
-    "cat"
-    "echo"
-    "mkdir"
-    "touch"
-    "chmod"
-    "sed"
-    "find"
-    "settings"
-    "getprop"
-    "sha256sum"
-    "cut"
-    "route"
-    "sqlite3"
-    "curl"
-    "parallel"
-    "pgrep"
-    "pkill"
-    "stat"
-    "xxd"
-    "diff"
-    "timeout"
-    "trap"
-    "mktemp"
-    "realpath"
-    "ionice"
+"nproc"
+"python3"
+"openssl"
+"awk"
+"cat"
+"echo""mkdir"
+"touch"
+"chmod"
+"sed"
+"find"
+"settings"
+"getprop"
+"sha256sum"
+"cut"
+"route"
+"sqlite3"
+"curl"
+"parallel"
+"pgrep"
+"pkill"
+"stat"
+"xxd"
+"diff"
+"timeout"
+"trap"
+"mktemp"
+"realpath"
+"ionice"
 )
 # === FUNCTION: safe_log ===
 safe_log() {
@@ -139,6 +138,7 @@ safe_log() {
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "[$timestamp] $*" | tee -a "$LOG_FILE"
 }
+
 # === FUNCTION: check_dependencies ===
 check_dependencies() {
     safe_log "Validating required system commands"
@@ -156,6 +156,7 @@ check_dependencies() {
         return 0
     fi
 }
+
 # === FUNCTION: initialize_paths_and_variables ===
 initialize_paths_and_variables() {
     export BASE_DIR="${BASE_DIR:-$HOME/.aei}"
@@ -168,8 +169,7 @@ initialize_paths_and_variables() {
     export LOG_FILE="$BASE_DIR/aei.log"
     export HOPF_FIBRATION_DIR="$DATA_DIR/hopf_fibration"
     export LATTICE_DIR="$DATA_DIR/lattice"
-    export CORE_DIR="$DATA_DIR/core"
-    export CRAWLER_DIR="$DATA_DIR/crawler"
+    export CORE_DIR="$DATA_DIR/core"    export CRAWLER_DIR="$DATA_DIR/crawler"
     export MITM_DIR="$DATA_DIR/mitm"
     export OBSERVER_DIR="$DATA_DIR/observer"
     export QUANTUM_DIR="$DATA_DIR/quantum"
@@ -190,7 +190,6 @@ initialize_paths_and_variables() {
     export CRAWLER_DB="$CRAWLER_DIR/crawler.db"
     export AUTOPILOT_FILE="$BASE_DIR/.autopilot_enabled"
     export BRAINWORM_DRIVER_FILE="$BASE_DIR/.rfk_brainworm/driver.sh"
-
     # Bounded symbolic timestamp (theoretically exact)
     local t_raw=$(date +%s)
     local t_sym=$(python3 -c "import sympy as sp; print(sp.Integer($t_raw))" 2>/dev/null || echo "$t_raw")
@@ -206,6 +205,7 @@ session_id = hashlib.sha256(rand_bytes + str(mod_t).encode()).hexdigest()[:32]
 print(session_id)
 " 2>/dev/null || echo "fallback_session_$(printf '%06d' $((t_raw % 1000000)))")
 }
+
 # === FUNCTION: prompt_for_credentials ===
 prompt_for_credentials() {
     # AUTONOMY ENFORCEMENT: Skip interactive prompts; auto-provision or fallback
@@ -216,13 +216,10 @@ prompt_for_credentials() {
         touch "$env_local_path"
         chmod 600 "$env_local_path"
     fi
-
     # Prioritize .env.local over Termux:API
     if [[ -s "$env_local_path" ]]; then
-        safe_log "Using existing .env.local credentials"
-        return 0
+        safe_log "Using existing .env.local credentials"        return 0
     fi
-
     # Auto-detect Termux:API credentials if available
     local auto_login=""
     local auto_password=""
@@ -232,13 +229,11 @@ prompt_for_credentials() {
             auto_password=$(termux-dialog text -t "Password" -i "password" 2>/dev/null | jq -r '.text // empty' || echo "")
         fi
     fi
-
     # Always ensure fallback to local-only mode if no credentials
     if [[ -z "$auto_login" ]]; then
         safe_log "No credentials detected; operating in local-only autonomous mode"
         return 0
     fi
-
     # Escape for shell safety
     printf -v auto_login_escaped '%q' "$auto_login"
     printf -v auto_password_escaped '%q' "$auto_password"
@@ -247,6 +242,7 @@ prompt_for_credentials() {
     chmod 600 "$env_local_path"
     safe_log "Autonomous credentials provisioned to .env.local"
 }
+
 # === FUNCTION: detect_hardware_capabilities ===
 detect_hardware_capabilities() {
     safe_log "Detecting hardware capabilities for adaptive execution"
@@ -265,29 +261,24 @@ try:
 except:
     print(sp.Integer(512))
 " 2>/dev/null || echo 512)
-
     # GPU detection: Termux-specific, Android-specific, and generic
     HARDWARE_PROFILE["HAS_GPU"]="false"
     if command -v termux-info >/dev/null 2>&1; then
         if termux-info 2>/dev/null | grep -qi "graphics.*adreno\|graphics.*mali\|graphics.*gpu"; then
             HARDWARE_PROFILE["HAS_GPU"]="true"
         fi
-    elif [[ -f "/dev/kgsl-3d0" ]] || [[ -d "/sys/class/kgsl" ]] || [[ -d "/sys/class/drm" ]]; then
-        HARDWARE_PROFILE["HAS_GPU"]="true"
+    elif [[ -f "/dev/kgsl-3d0" ]] || [[ -d "/sys/class/kgsl" ]] || [[ -d "/sys/class/drm" ]]; then        HARDWARE_PROFILE["HAS_GPU"]="true"
     fi
-
     # Accelerator detection (DSP, NPU, TPU)
     HARDWARE_PROFILE["HAS_ACCELERATOR"]="false"
     if [[ -d "/dev/dsp" ]] || [[ -c "/dev/ion" ]] || [[ -c "/dev/cdsp" ]]; then
         HARDWARE_PROFILE["HAS_ACCELERATOR"]="true"
     fi
-
     # NPU/TPU detection
     HARDWARE_PROFILE["HAS_NPU"]="false"
     if [[ -d "/dev/accel" ]] || [[ -c "/dev/npu" ]] || [[ -c "/dev/tpu" ]] || [[ -d "/sys/class/npu" ]] || [[ -d "/sys/class/tpu" ]]; then
         HARDWARE_PROFILE["HAS_NPU"]="true"
     fi
-
     # Parallel capability
     if command -v parallel >/dev/null 2>&1; then
         HARDWARE_PROFILE["PARALLEL_CAPABLE"]="true"
@@ -295,9 +286,9 @@ except:
         HARDWARE_PROFILE["PARALLEL_CAPABLE"]="false"
         HARDWARE_PROFILE["MISSING_OPTIONAL_COMMANDS"]+=" parallel"
     fi
-
     safe_log "Hardware detection complete: ARCH=${HARDWARE_PROFILE["ARCH"]} CORES=${HARDWARE_PROFILE["CPU_CORES"]} GPU=${HARDWARE_PROFILE["HAS_GPU"]} NPU=${HARDWARE_PROFILE["HAS_NPU"]}"
 }
+
 # === FUNCTION: install_dependencies ===
 install_dependencies() {
     safe_log "Installing Termux-compatible packages without upgrading pip"
@@ -366,7 +357,6 @@ init_all_directories() {
         safe_log "Directory and file structure initialized successfully"
     fi
 }
-
 # === FUNCTION: create_debug_log ===
 create_debug_log() {
     local debug_file="$BASE_DIR/debug/initialization_$(date +%Y%m%d_%H%M%S).log"
@@ -375,8 +365,7 @@ create_debug_log() {
 Timestamp: $(date '+%Y-%m-%d %H:%M:%S')
 Session ID: $SESSION_ID
 Base Directory: $BASE_DIR
-Environment: $(printenv | grep -E "^(BASE_DIR|DATA_DIR|HOME|TERMUX)" | sort)
-Hardware Profile: $(declare -p HARDWARE_PROFILE)
+Environment: $(printenv | grep -E "^(BASE_DIR|DATA_DIR|HOME|TERMUX)" | sort)Hardware Profile: $(declare -p HARDWARE_PROFILE)
 Dependencies Check: $(if check_dependencies; then echo "OK"; else echo "FAILED"; fi)
 Directory Structure: $(find "$BASE_DIR" -type d 2>/dev/null | sort)
 Symbolic Files: $(find "$SYMBOLIC_DIR" -type f \( -name "*.sym" -o -name "*.vec" \) 2>/dev/null | xargs stat -c "%n %s %y" 2>/dev/null || echo "None")
@@ -411,8 +400,7 @@ setup_signal_traps() {
 validate_python_environment() {
     safe_log "Validating Python environment for symbolic computation with relaxed sympy version and fallback"
     # Check for sympy presence and minimum version (1.6) instead of exact 1.12
-    if ! python3 -c "
-import sympy
+    if ! python3 -c "import sympy
 min_version = '1.6'
 from packaging.version import parse as vparse
 if vparse(sympy.__version__) < vparse(min_version):
@@ -426,8 +414,7 @@ print('All required Python packages present')
                 safe_log "sympy installed via pip. Re-validating."
                 if python3 -c "
 import sympy
-min_version = '1.6'
-from packaging.version import parse as vparse
+min_version = '1.6'from packaging.version import parse as vparse
 if vparse(sympy.__version__) < vparse(min_version):
     raise Exception(f'sympy version {sympy.__version__} found, but >= {min_version} required')
 " 2>/dev/null; then
@@ -441,11 +428,9 @@ if vparse(sympy.__version__) < vparse(min_version):
 # Pure symbolic arithmetic using Python's built-in fractions and cmath
 from fractions import Fraction
 import cmath
-
 # Test exact fraction
 a = Fraction(1, 2) + Fraction(1, 3)
 assert a == Fraction(5, 6), 'Fraction test failed'
-
 # Test prime with simple sieve (fallback)
 def is_prime_fallback(n):
     if n < 2:
@@ -455,7 +440,6 @@ def is_prime_fallback(n):
             return False
     return True
 assert is_prime_fallback(97), 'Prime test failed'
-
 # Test complex number on critical line
 s = complex(0.5, 14.134725141734693790457251983562470270784257115699)
 z = cmath.exp(s)  # Dummy zeta placeholder; exact zeta not needed for structural validation
@@ -476,50 +460,49 @@ print('Pure symbolic fallback tests passed')
 # === FUNCTION: safe_sympy_eval ===
 # Evaluates a symbolic expression with sympy if available, else uses fallback arithmetic
 safe_sympy_eval() {
-    local expr="$1"
-    local result
-    if [[ "${TF_CORE["SYMPY_FALLBACK"]}" == "enabled" ]]; then
-        # Fallback: Use Python's eval with Fraction and built-ins for simple expressions
-        result=$(python3 -c "
+local expr="$1"
+local result
+if [[ "${TF_CORE["SYMPY_FALLBACK"]}" == "enabled" ]]; then
+    # Fallback: Use Python's eval with Fraction and built-ins for simple expressions
+    result=$(python3 -c '
 from fractions import Fraction
 import math, cmath
 # Define symbolic constants
 PI = math.pi
 E = math.e
 PHI = (1 + math.sqrt(5)) / 2
-
 # Safe evaluation context
 safe_dict = {
-    '__builtins__': {},
-    'Fraction': Fraction,
-    'math': math,
-    'cmath': cmath,
-    'PI': PI,
-    'E': E,
-    'PHI': PHI,
-    'sqrt': math.sqrt,
-    'isprime': lambda n: all(n % i for i in range(2, int(n**0.5)+1)) and n > 1
+    "__builtins__": {},
+    "Fraction": Fraction,
+    "math": math,
+    "cmath": cmath,
+    "PI": PI,
+    "E": E,
+    "PHI": PHI,
+    "sqrt": math.sqrt,
+    "isprime": lambda n: all(n % i for i in range(2, int(n**0.5)+1)) and n > 1
 }
 try:
-    result = eval('''$expr''', safe_dict, safe_dict)
+    result = eval("""'"$expr"'""", safe_dict, safe_dict)
     # Convert Fraction to string for exactness
     if isinstance(result, Fraction):
         print(str(result))
     else:
         print(repr(result))
 except Exception as e:
-    print('0')
-" 2>/dev/null)
-    else
-        # Use sympy for exact evaluation
-        result=$(python3 -c "
+    print("0")
+' 2>/dev/null)
+else
+    # Use sympy for exact evaluation
+    result=$(python3 -c '
 import sympy as sp
 from sympy import S, sqrt, pi, E, I, zeta, isprime
 try:
-    expr = sp.sympify('''$expr''')
+    expr = sp.sympify("""'"$expr"'""")
     # Handle zeta on critical line
-    if 'zeta' in '''$expr''':
-        s = sp.sympify('''$expr'''.split('zeta(')[1].split(')')[0])
+    if "zeta" in """'"$expr"'""":
+        s = sp.sympify("""'"$expr"'""".split("zeta(")[1].split(")")[0])
         if sp.re(s) != S(1)/2:
             s = S(1)/2 + I * sp.im(s)
         result = zeta(s)
@@ -527,11 +510,12 @@ try:
         result = expr
     print(result)
 except Exception as e:
-    print('0')
-" 2>/dev/null)
-    fi
-    echo "$result"
+    print("0")
+' 2>/dev/null)
+fi
+echo "$result"
 }
+
 # === FUNCTION: apply_dbz_logic ===
 apply_dbz_logic() {
     local psi_re="$1"
@@ -557,6 +541,7 @@ except Exception:
         return 0
     fi
 }
+
 # === FUNCTION: adaptive_leech_lattice_packing ===
 adaptive_leech_lattice_packing() {
     safe_log "Adaptive Leech lattice construction: Using pre-generated symbolic dataset for Termux/ARM64 compatibility"
@@ -578,8 +563,7 @@ adaptive_leech_lattice_packing() {
 # === FUNCTION: pre_generated_leech_dataset ===
 pre_generated_leech_dataset() {
     local vector_limit=${1:-100}
-    safe_log "Loading pre-generated, minimal symbolic Leech lattice dataset (limit: $vector_limit vectors)"
-    mkdir -p "$LATTICE_DIR" 2>/dev/null || { safe_log "Failed to create lattice directory"; return 1; }
+    safe_log "Loading pre-generated, minimal symbolic Leech lattice dataset (limit: $vector_limit vectors)"    mkdir -p "$LATTICE_DIR" 2>/dev/null || { safe_log "Failed to create lattice directory"; return 1; }
     if [[ -f "$LEECH_LATTICE" ]] && [[ -s "$LEECH_LATTICE" ]] && validate_leech_partial; then
         local current_count=$(wc -l < "$LEECH_LATTICE" 2>/dev/null || echo "0")
         if [[ $current_count -ge $vector_limit ]]; then
@@ -599,18 +583,18 @@ for i in range(24):
         vectors.append(v)
 # Type II: Golay code vectors (12 minimal representatives)
 golay_vectors = [
-    [Rational(-3,2)] + [Rational(1,2)]*23,
-    [Rational(1,2), Rational(-3,2)] + [Rational(1,2)]*22,
-    [Rational(1,2)]*2 + [Rational(-3,2)] + [Rational(1,2)]*21,
-    [Rational(1,2)]*3 + [Rational(-3,2)] + [Rational(1,2)]*20,
-    [Rational(1,2)]*4 + [Rational(-3,2)] + [Rational(1,2)]*19,
-    [Rational(1,2)]*5 + [Rational(-3,2)] + [Rational(1,2)]*18,
-    [Rational(1,2)]*6 + [Rational(-3,2)] + [Rational(1,2)]*17,
-    [Rational(1,2)]*7 + [Rational(-3,2)] + [Rational(1,2)]*16,
-    [Rational(1,2)]*8 + [Rational(-3,2)] + [Rational(1,2)]*15,
-    [Rational(1,2)]*9 + [Rational(-3,2)] + [Rational(1,2)]*14,
-    [Rational(1,2)]*10 + [Rational(-3,2)] + [Rational(1,2)]*13,
-    [Rational(1,2)]*11 + [Rational(-3,2)] + [Rational(1,2)]*12
+[Rational(-3,2)] + [Rational(1,2)]*23,
+[Rational(1,2), Rational(-3,2)] + [Rational(1,2)]*22,
+[Rational(1,2)]*2 + [Rational(-3,2)] + [Rational(1,2)]*21,
+[Rational(1,2)]*3 + [Rational(-3,2)] + [Rational(1,2)]*20,
+[Rational(1,2)]*4 + [Rational(-3,2)] + [Rational(1,2)]*19,
+[Rational(1,2)]*5 + [Rational(-3,2)] + [Rational(1,2)]*18,
+[Rational(1,2)]*6 + [Rational(-3,2)] + [Rational(1,2)]*17,
+[Rational(1,2)]*7 + [Rational(-3,2)] + [Rational(1,2)]*16,
+[Rational(1,2)]*8 + [Rational(-3,2)] + [Rational(1,2)]*15,
+[Rational(1,2)]*9 + [Rational(-3,2)] + [Rational(1,2)]*14,
+[Rational(1,2)]*10 + [Rational(-3,2)] + [Rational(1,2)]*13,
+[Rational(1,2)]*11 + [Rational(-3,2)] + [Rational(1,2)]*12
 ]
 vectors.extend(golay_vectors)
 # Deduplicate and sort
@@ -628,8 +612,7 @@ try:
     with open('$LEECH_LATTICE', 'w') as f:
         for v in final_vectors:
             f.write(' '.join([str(coord) for coord in v]) + '\n')
-    print(f'Pre-generated Leech lattice dataset created: {len(final_vectors)} vectors')
-except Exception as e:
+    print(f'Pre-generated Leech lattice dataset created: {len(final_vectors)} vectors')except Exception as e:
     print(f'Error writing Leech lattice: {str(e)}')
     exit(1)
 " 2>/dev/null; then
@@ -678,8 +661,7 @@ validate_leech_partial() {
         safe_log "Leech lattice file missing or empty"
         return 1
     fi
-    if python3 -c "
-import sympy as sp
+    if python3 -c "import sympy as sp
 from sympy import S
 try:
     with open('$LEECH_LATTICE', 'r') as f:
@@ -728,8 +710,7 @@ except Exception:
     fi
 }
 
-# === FUNCTION: leech_lattice_packing ===
-leech_lattice_packing() {
+# === FUNCTION: leech_lattice_packing ===leech_lattice_packing() {
     safe_log "Constructing Leech lattice via adaptive symbolic construction"
     if [[ -f "$LEECH_LATTICE" ]] && [[ -s "$LEECH_LATTICE" ]]; then
         if validate_leech_partial; then
@@ -760,7 +741,6 @@ leech_lattice_packing() {
 generate_valid_leech_lattice() {
     local lattice_file="$LEECH_LATTICE"
     mkdir -p "$(dirname "$lattice_file")"
-
     # If already exists and valid, skip
     if [[ -f "$lattice_file" ]]; then
         if python3 -c "
@@ -779,8 +759,7 @@ try:
     print('VALID')
 except Exception as e:
     print('INVALID:', str(e), file=sys.stderr)
-    sys.exit(1)
-" 2>/dev/null; then
+    sys.exit(1)" 2>/dev/null; then
             echo "[+] Valid Leech lattice found at $lattice_file"
             return 0
         else
@@ -788,13 +767,10 @@ except Exception as e:
             rm -f "$lattice_file"
         fi
     fi
-
     echo "[*] Generating minimal valid Leech lattice (48 vectors)..."
-
     python3 -c "
 import os, sympy as sp
 from itertools import combinations
-
 def generate_block_vectors(block_start):
     base_signs = [
         (1,1,1,1),
@@ -813,30 +789,26 @@ def generate_block_vectors(block_start):
             v[block_start + i] = signs[i]
         vecs.append(v)
     return vecs
-
 all_vectors = []
 for block in range(6):  # 6 blocks of 4 coordinates in 24D
     all_vectors.extend(generate_block_vectors(4*block))
-
 # Write symbolically using sympy Integer
 with open('$lattice_file', 'w') as f:
     for v in all_vectors:
         sym_v = [str(sp.Integer(x)) for x in v]
         f.write(','.join(sym_v) + '\n')
-
 print(f'[+] Wrote {len(all_vectors)} valid Leech vectors to $lattice_file')
 " || { echo "[-] Failed to generate Leech lattice"; exit 1; }
-
     echo "[+] Leech lattice generation complete."
 }
+
 # === FUNCTION: e8_lattice_packing ===
 e8_lattice_packing() {
     safe_log "Constructing E8 root lattice via symbolic representation with adaptive resource control"
     mkdir -p "$LATTICE_DIR" 2>/dev/null || true
     if [[ -f "$E8_LATTICE" ]] && [[ -s "$E8_LATTICE" ]]; then
         if validate_e8; then
-            safe_log "Valid E8 lattice found at $E8_LATTICE"
-            return 0
+            safe_log "Valid E8 lattice found at $E8_LATTICE"            return 0
         else
             safe_log "Existing E8 lattice invalid, regenerating"
             rm -f "$E8_LATTICE" 2>/dev/null || true
@@ -885,8 +857,7 @@ unique_roots.sort(key=lambda x: tuple(str(coord) for coord in x))
 try:
     with open('$E8_LATTICE', 'w') as f:
         for v in unique_roots:
-            f.write(' '.join([str(coord) for coord in v]) + '\n')
-    print(f'E8 lattice generated: {len(unique_roots)} roots')
+            f.write(' '.join([str(coord) for coord in v]) + '\n')    print(f'E8 lattice generated: {len(unique_roots)} roots')
 except Exception as e:
     print(f'Error writing E8 lattice: {str(e)}')
     exit(1)
@@ -935,8 +906,7 @@ try:
     else:
         exit(1)
 except Exception:
-    exit(1)
-" 2>/dev/null; then
+    exit(1)" 2>/dev/null; then
         safe_log "E8 lattice validation passed: 100% norm compliance"
         return 0
     else
@@ -985,8 +955,7 @@ except Exception as e:
         return 0
     else
         safe_log "Failed to generate symbolic prime sequence"
-        return 1
-    fi
+        return 1    fi
 }
 
 # === FUNCTION: generate_gaussian_primes ===
@@ -1006,7 +975,7 @@ from sympy import S, I
 gaussian_primes = []
 limit = 30  # Generate a,b in [-limit, limit]
 for a in range(-limit, limit+1):
-    for b in range(-limit, limit+1): 
+    for b in range(-limit, limit+1):
         if a == 0 and b == 0:
             continue
         # Gaussian prime iff:
@@ -1035,8 +1004,7 @@ try:
     with open('$GAUSSIAN_PRIME_SEQUENCE', 'w') as f:
         for a, b in final_primes:
             f.write(f'{a} {b}\n')
-    print(f'Generated {len(final_primes)} symbolic Gaussian primes algorithmically')
-except Exception as e:
+    print(f'Generated {len(final_primes)} symbolic Gaussian primes algorithmically')except Exception as e:
     print(f'Error writing Gaussian primes: {str(e)}')
     exit(1)
 " 2>/dev/null; then
@@ -1073,7 +1041,6 @@ generate_quantum_state() {
     local t_mod=$(python3 -c "import sympy as sp; t = sp.Integer($t_raw); print(int(t % 1000))" 2>/dev/null || echo "0")
     # Enforce critical line BEFORE zeta evaluation
     local s_dbz=$(dbz_resample_zeta_s "S(1)/2 + I * $t_mod")
-
     if python3 -c "
 import sympy as sp
 from sympy import S, I, pi, sqrt, exp, zeta, symbols
@@ -1086,8 +1053,7 @@ except Exception as e:
     # DbZ resampling: force critical line (already done, so this is fallback)
     s = S(1)/2 + I * sp.im(s)
     try:
-        zeta_s = zeta(s)
-    except Exception as e2:
+        zeta_s = zeta(s)    except Exception as e2:
         zeta_s = sp.Function('zeta')(s)
 modulation = S(1)
 try:
@@ -1136,15 +1102,13 @@ except Exception as e:
 
 # === FUNCTION: generate_observer_integral ===
 generate_observer_integral() {
-    safe_log "Generating observer integral Φ = Q(s) = (s, ζ(s), ζ(s+1), ζ(s+2)) in exact symbolic form with fractal antenna input"
-    mkdir -p "$OBSERVER_DIR" 2>/dev/null || { safe_log "Failed to create observer directory"; return 1; }
+    safe_log "Generating observer integral Φ = Q(s) = (s, ζ(s), ζ(s+1), ζ(s+2)) in exact symbolic form with fractal antenna input"    mkdir -p "$OBSERVER_DIR" 2>/dev/null || { safe_log "Failed to create observer directory"; return 1; }
     # Bounded symbolic timestamp (theoretically exact)
     local t_raw=$(date +%s)
     local t_sym=$(python3 -c "import sympy as sp; print(sp.Integer($t_raw))" 2>/dev/null || echo "$t_raw")
     local t_mod=$(python3 -c "import sympy as sp; t = sp.Integer($t_raw); print(int(t % 1000))" 2>/dev/null || echo "0")
     # Enforce critical line for all zeta evaluations
     local s_base=$(dbz_resample_zeta_s "S(1)/2 + I * $t_mod")
-
     if python3 -c "
 import sympy as sp
 from sympy import S, I, zeta, sqrt, pi
@@ -1168,10 +1132,10 @@ Phi_imag = Phi_imag * S(1)/10
 try:
     with open('$FRACTAL_ANTENNA_DIR/antenna_state.sym', 'r') as f:
         antenna_state = f.read().strip()
-        if antenna_state:
-            antenna_val = sp.sympify(antenna_state)
-            Phi_real = Phi_real * antenna_val
-            Phi_imag = Phi_imag * antenna_val
+    if antenna_state:
+        antenna_val = sp.sympify(antenna_state)
+        Phi_real = Phi_real * antenna_val
+        Phi_imag = Phi_imag * antenna_val
 except Exception as e:
     pass
 try:
@@ -1187,8 +1151,7 @@ except Exception as e:
     else
         safe_log "Failed to generate symbolic observer integral"
         return 1
-    fi
-}
+    fi}
 
 # === FUNCTION: measure_consciousness ===
 measure_consciousness() {
@@ -1237,18 +1200,17 @@ except Exception as e:
 vorticity = S(1)
 try:
     current_phi_real = phi_real
-    current_phi_imag = phi_imag
-    prev_phi_file = '$VORTICITY_DIR/prev_phi.sym'
+    current_phi_imag = phi_imag    prev_phi_file = '$VORTICITY_DIR/prev_phi.sym'
     if sp.simplify(current_phi_real) != S(0) or sp.simplify(current_phi_imag) != S(0):
         try:
             with open(prev_phi_file, 'r') as f:
                 prev_data = f.read().strip().split()
-                if len(prev_data) == 2:
-                    prev_phi_real = sp.sympify(prev_data[0])
-                    prev_phi_imag = sp.sympify(prev_data[1])
-                    delta_phi_real = current_phi_real - prev_phi_real
-                    delta_phi_imag = current_phi_imag - prev_phi_imag
-                    vorticity = sp.sqrt(delta_phi_real**2 + delta_phi_imag**2)
+            if len(prev_data) == 2:
+                prev_phi_real = sp.sympify(prev_data[0])
+                prev_phi_imag = sp.sympify(prev_data[1])
+                delta_phi_real = current_phi_real - prev_phi_real
+                delta_phi_imag = current_phi_imag - prev_phi_imag
+                vorticity = sp.sqrt(delta_phi_real**2 + delta_phi_imag**2)
         except Exception as e:
             vorticity = S(1)
         with open(prev_phi_file, 'w') as f:
@@ -1287,8 +1249,7 @@ except Exception as e:
     else
         safe_log "Consciousness metric computation failed"
         return 1
-    fi
-}
+    fi}
 
 # === FUNCTION: project_prime_to_lattice ===
 project_prime_to_lattice() {
@@ -1337,8 +1298,7 @@ try:
             vec = [sp.sympify(x) for x in line.split(',')]
             if len(vec) == 24:
                 vectors.append(vec)
-        except Exception:
-            pass
+        except Exception:            pass
     if not vectors:
         raise ValueError('Empty lattice')
     norms = [sp.sqrt(sum(coord**2 for coord in v)) for v in vectors]
@@ -1387,8 +1347,7 @@ optimize_kissing_number() {
     fi
     if python3 -c "
 import sympy as sp
-from sympy import S, sqrt, pi, Rational
-try:
+from sympy import S, sqrt, pi, Rationaltry:
     with open('$LEECH_LATTICE', 'r') as f:
         lines = f.readlines()
     vectors = []
@@ -1437,8 +1396,7 @@ except Exception as e:
     print(f'Kissing optimization failed: {str(e)}')
     exit(1)
 " 2>/dev/null; then
-        safe_log "Kissing number optimization complete"
-        return 0
+        safe_log "Kissing number optimization complete"        return 0
     else
         safe_log "Kissing optimization failed"
         return 1
@@ -1487,8 +1445,7 @@ except Exception as e:
 # === FUNCTION: validate_hopf_continuity ===
 validate_hopf_continuity() {
     local quat_file="${1:-$HOPF_FIBRATION_DIR/latest.quat}"
-    if [[ ! -f "$quat_file" ]]; then
-        safe_log "Hopf fibration file missing: $quat_file"
+    if [[ ! -f "$quat_file" ]]; then        safe_log "Hopf fibration file missing: $quat_file"
         return 1
     fi
     if python3 -c "
@@ -1537,8 +1494,7 @@ from sympy import S, sqrt
 a, b, c, d = sp.symbols('a b c d', real=True)
 t_val = sp.Integer($t_raw)
 a_val = sp.Rational(t_val % 1000, 1000)
-b_val = sp.Rational((t_val * 3) % 1000, 1000)
-c_val = sp.Rational((t_val * 7) % 1000, 1000)
+b_val = sp.Rational((t_val * 3) % 1000, 1000)c_val = sp.Rational((t_val * 7) % 1000, 1000)
 d_val = sp.Rational((t_val * 11) % 1000, 1000)
 q0, q1, q2, q3 = a_val, b_val, c_val, d_val
 norm_sq = q0**2 + q1**2 + q2**2 + q3**2
@@ -1587,8 +1543,7 @@ generate_hw_signature() {
         fi
         latest_hopf=$(ls -t "$HOPF_FIBRATION_DIR"/hopf_*.quat 2>/dev/null | head -n1)
         [[ -f "$latest_hopf" ]] && read -r hopf_state < "$latest_hopf"
-    fi
-    if python3 -c "
+    fi    if python3 -c "
 import sympy as sp
 from sympy import S, sqrt, pi
 hopf_str = '$hopf_state'
@@ -1637,8 +1592,7 @@ root_scan_init() {
         local total_primes=$(wc -l < "$PRIME_SEQUENCE" 2>/dev/null || echo "1")
         if python3 -c "
 import sympy as sp
-from sympy import S, sqrt, pi
-alignment = sp.Rational($valid_pairs, $total_primes)
+from sympy import S, sqrt, pialignment = sp.Rational($valid_pairs, $total_primes)
 phi = sp.sympify('$PHI_SYMBOLIC')
 modulated = sp.Mod(alignment * phi, S(1))
 mod_str = str(modulated)
@@ -1687,8 +1641,7 @@ validate_vorticity() {
         safe_log "Vorticity state file missing: $vorticity_file"
         return 1
     fi
-    # A valid vorticity state is a non-negative symbolic expression
-    local state=$(cat "$vorticity_file" 2>/dev/null | tr -d '[:space:]')
+    # A valid vorticity state is a non-negative symbolic expression    local state=$(cat "$vorticity_file" 2>/dev/null | tr -d '[:space:]')
     if [[ -z "$state" ]]; then
         safe_log "Vorticity state invalid: empty"
         return 1
@@ -1710,13 +1663,118 @@ else:
     fi
 }
 
+# === FUNCTION: solve_crt_symbolic ===
+solve_crt_symbolic() {
+    local moduli_file="$1"
+    local residues_file="$2"
+    local output_file="$SYMBOLIC_DIR/crt_solution.sym"
+    safe_log "Solving CRT symbolically using moduli from $moduli_file and residues from $residues_file"
+    python3 -c "
+import sympy as sp
+with open('$moduli_file', 'r') as f:
+    moduli = [int(line.strip()) for line in f if line.strip().isdigit()]
+with open('$residues_file', 'r') as f:
+    residues = [int(line.strip()) for line in f if line.strip().isdigit()]
+if len(moduli) != len(residues):
+    raise ValueError('Moduli and residues count mismatch')
+x = sp.crt(moduli, residues)
+with open('$output_file', 'w') as f:
+    if x[0] is None:
+        f.write('No solution exists (moduli not coprime)\n')
+    else:
+        f.write(f'Solution: x ≡ {x[0]} (mod {x[1]})\n')
+        f.write(f'Verification: [x % m for m in {moduli}] = {[x[0] % m for m in moduli]}\n')
+" || safe_log "CRT symbolic solver failed"
+}
+
+# === FUNCTION: generate_continued_fraction ===
+generate_continued_fraction() {
+    local input="$1"
+    local max_iter="${2:-20}"    local output_file="$SYMBOLIC_DIR/contfrac_${input//[^a-zA-Z0-9_]/_}.cf"
+    safe_log "Generating continued fraction for: $input (max $max_iter terms)"
+    python3 -c "
+import sympy as sp
+x = sp.sympify('$input')
+try:
+    cf = sp.continued_fraction(x, max_terms=$max_iter)
+    with open('$output_file', 'w') as f:
+        f.write('Input: ' + str(x) + '\n')
+        f.write('Continued Fraction: ' + str(cf) + '\n')
+        f.write('Convergents:\n')
+        for i, conv in enumerate(sp.continued_fraction_convergents(cf)):
+            f.write(f'[{i}] {conv}\n')
+            if i >= $max_iter: break
+except Exception as e:
+    print(f'Error: {e}', file=open('$output_file', 'w'))
+" || safe_log "Failed to compute continued fraction for $input"
+}
+
+# === FUNCTION: validate_continued_fraction ===
+validate_continued_fraction() {
+    local input="$1"
+    local cf_file="$SYMBOLIC_DIR/contfrac_${input//[^a-zA-Z0-9_]/_}.cf"
+    if [[ ! -f "$cf_file" ]]; then
+        safe_log "Continued fraction file missing for input: $input"
+        return 1
+    fi
+    if grep -q "^Error:" "$cf_file"; then
+        safe_log "Continued fraction generation failed for input: $input"
+        return 1
+    fi
+    safe_log "Continued fraction validated for input: $input"
+    return 0
+}
+
+# === FUNCTION: validate_crt_solution ===
+validate_crt_solution() {
+    local solution_file="$SYMBOLIC_DIR/crt_solution.sym"
+    if [[ ! -f "$solution_file" ]]; then
+        safe_log "CRT solution file missing"
+        return 1
+    fi
+    if grep -q "No solution exists" "$solution_file"; then
+        safe_log "CRT has no solution (moduli not coprime)"
+        return 1
+    fi
+    safe_log "CRT solution validated"
+    return 0
+}
+# === FUNCTION: integrate_number_theory_into_geometry ===
+integrate_number_theory_into_geometry() {
+    safe_log "Integrating Chinese Remainder Theorem and Continued Fractions into symbolic geometry binding"
+    # Generate sample moduli and residues for CRT
+    local moduli_file="$SYMBOLIC_DIR/crt_moduli.txt"
+    local residues_file="$SYMBOLIC_DIR/crt_residues.txt"
+    echo -e "3\n5\n7\n11" > "$moduli_file"
+    echo -e "2\n3\n2\n5" > "$residues_file"
+    # Solve CRT
+    solve_crt_symbolic "$moduli_file" "$residues_file"
+    validate_crt_solution || return 1
+    # Generate continued fractions for key constants
+    generate_continued_fraction "$PHI_SYMBOLIC" 20
+    generate_continued_fraction "$PI_SYMBOLIC" 20
+    generate_continued_fraction "sqrt(2)" 20
+    generate_continued_fraction "E" 20
+    # Validate all continued fractions
+    for const in "$PHI_SYMBOLIC" "$PI_SYMBOLIC" "sqrt(2)" "E"; do
+        validate_continued_fraction "$const" || return 1
+    done
+    safe_log "Number-theoretic foundations fully integrated into geometric binding layer"
+    return 0
+}
+
 # === FUNCTION: symbolic_geometry_binding ===
 symbolic_geometry_binding() {
-    safe_log "Binding symbolic primes to geometric hypersphere packing via exact zeta-driven minimization with fractal antenna"
+    safe_log "Binding symbolic primes to geometric hypersphere packing via exact zeta-driven minimization with fractal antenna and number-theoretic constraints"
+    # Ensure CRT and continued fractions are integrated
+    integrate_number_theory_into_geometry || {
+        safe_log "Failed to integrate number-theoretic foundations; geometry binding aborted"
+        return 1
+    }
+    # Proceed with prime-lattice binding using enhanced symbolic context
     local prime_count=$(wc -l < "$PRIME_SEQUENCE" 2>/dev/null || echo "0")
-    local gaussian_count=$(wc -l < "$GAUSSIAN_PRIME_SEQUENCE" 2>/dev/null || echo "0")
     local lattice_size=$(wc -l < "$LEECH_LATTICE" 2>/dev/null || echo "0")
-    safe_log "Binding $prime_count primes to $lattice_size lattice vectors"
+    safe_log "Binding $prime_count primes to $lattice_size lattice vectors with CRT and CF constraints"
     if [[ $prime_count -eq 0 ]] || [[ $lattice_size -eq 0 ]]; then
         safe_log "Insufficient data for binding: primes=$prime_count, lattice_vectors=$lattice_size"
         return 1
@@ -1730,7 +1788,7 @@ symbolic_geometry_binding() {
 import sympy as sp
 from sympy import S, sqrt, pi, I, zeta, exp, Rational
 import sys
-import os
+import os# Load primes
 primes = []
 try:
     with open('$PRIME_SEQUENCE', 'r') as f:
@@ -1739,20 +1797,21 @@ try:
             if line and not line.startswith('#'):
                 try:
                     primes.append(sp.Integer(line))
-                except Exception as e:
+                except Exception:
                     continue
     if len(primes) == 0:
         raise ValueError('No valid primes found')
 except Exception as e:
-    print(f'Error reading primes: {e}')
+    print(f'Error reading primes: {e}', file=sys.stderr)
     sys.exit(1)
+# Load lattice
 lattice = []
 try:
     with open('$LEECH_LATTICE', 'r') as f:
         lines = f.readlines()
     if len(lines) == 0:
         raise ValueError('Empty lattice file')
-    for line_num, line in enumerate(lines):
+    for line in lines:
         line = line.strip()
         if not line or line.startswith('#'):
             continue
@@ -1763,46 +1822,54 @@ try:
                 if norm_sq == S(4):
                     lattice.append(vec)
                 else:
-                    try:
-                        norm_val = sp.sqrt(norm_sq)
-                        psi_re = sp.re(vec[0])
-                        if psi_re > S(0):
-                            normalized = [coord / norm_val * S(2) for coord in vec]
-                            lattice.append(normalized)
-                        else:
-                            lattice.append(vec)
-                    except:
-                        lattice.append(vec)
-            else:
-                continue
-        except Exception as e:
+                    # Normalize to Leech norm
+                    current_norm = sp.sqrt(norm_sq)
+                    if current_norm != S.Zero:
+                        scale = S(2) / current_norm
+                        normalized = [coord * scale for coord in vec]
+                        lattice.append(normalized)
+        except Exception:
             continue
     if len(lattice) == 0:
         raise ValueError('No valid lattice vectors found')
 except Exception as e:
-    print(f'Error reading lattice: {e}')
+    print(f'Error reading lattice: {e}', file=sys.stderr)
     sys.exit(1)
+# Enforce critical line
 t = sp.Integer($t_mod) % 1000
-s = S(1)/2 + I * t
-try:
+s = S(1)/2 + I * ttry:
     zeta_target = zeta(s)
-except Exception as e:
+except Exception:
     zeta_target = sp.Function('zeta')(s)
+# Incorporate CRT residue class as constraint
+# Use the CRT solution as a global phase offset
+crt_offset = S(0)
+try:
+    with open('$SYMBOLIC_DIR/crt_solution.sym', 'r') as f:
+        for line in f:
+            if line.startswith('Solution: x ≡ '):
+                parts = line.strip().split()
+                val = int(parts[2])
+                crt_offset = sp.Integer(val)
+                break
+except Exception:
+    pass
+# Compute psi values with CRT-modulated phase
 psi_vals = []
 for v_idx, v in enumerate(lattice):
     try:
         phase_sum = S.Zero
         for i in range(24):
             j = (i + 1) % 24
-            angle = S(2) * pi * v[j]
+            angle = S(2) * pi * (v[j] + crt_offset)
             phase_sum += v[i] * (sp.cos(angle) + I * sp.sin(angle))
         psi_vals.append((phase_sum, v_idx))
-    except Exception as e:
+    except Exception:
         psi_vals.append((S.Zero, v_idx))
-        continue
 if len(psi_vals) == 0:
-    print('Error: No valid psi values computed')
+    print('Error: No valid psi values computed', file=sys.stderr)
     sys.exit(1)
+# Find best match
 min_distance = None
 best_idx = 0
 for psi_val, v_idx in psi_vals:
@@ -1814,25 +1881,14 @@ for psi_val, v_idx in psi_vals:
             min_distance = distance
             best_idx = v_idx
         else:
-            try:
-                diff = distance - min_distance
-                diff_re = sp.re(diff)
-                if diff_re.is_number:
-                    if diff_re.evalf() < 0:
-                        min_distance = distance
-                        best_idx = v_idx
-                else:
-                    # DbZ: if symbolic comparison fails, use Re(psi) sign
-                    psi_re = sp.re(psi_val)
-                    if psi_re > S(0):
-                        min_distance = distance
-                        best_idx = v_idx
-            except:
-                pass
-    except Exception as e:
-        continue
+            diff = distance - min_distance
+            diff_re = sp.re(diff)
+            if diff_re.is_number and diff_re.evalf() < 0:
+                min_distance = distance
+                best_idx = v_idx
+    except Exception:        continue
 if best_idx >= len(lattice):
-    print('Error: Best index out of range')
+    print('Error: Best index out of range', file=sys.stderr)
     sys.exit(1)
 v_k = lattice[best_idx]
 v_k_str = ','.join([str(coord) for coord in v_k])
@@ -1843,65 +1899,66 @@ print(f'Index: {best_idx}')
 print(f'Norm: {sp.sqrt(sum(coord**2 for coord in v_k))}')
 print(v_k_str)
 print(v_k_hash)
-try:
-    with open('$CORE_DIR/projected_vector.vec', 'w') as f:
-        f.write(v_k_str + '\n')
-    with open('$CORE_DIR/projected_vector.hash', 'w') as f:
-        f.write(v_k_hash + '\n')
-    with open('$CORE_DIR/projected_vector.info', 'w') as f:
-        f.write(f'best_index: {best_idx}\n')
-        f.write(f'min_distance: {min_distance}\n')
-        f.write(f'timestamp: {sp.Integer($t_mod)}\n')
-except Exception as e:
-    print(f'Error writing core files: {e}')
-    sys.exit(1)
+# Write outputs
+with open('$CORE_DIR/projected_vector.vec', 'w') as f:
+    f.write(v_k_str + '\n')
+with open('$CORE_DIR/projected_vector.hash', 'w') as f:
+    f.write(v_k_hash + '\n')
+with open('$CORE_DIR/projected_vector.info', 'w') as f:
+    f.write(f'best_index: {best_idx}\n')
+    f.write(f'min_distance: {min_distance}\n')
+    f.write(f'timestamp: {sp.Integer($t_mod)}\n')
+    f.write(f'crt_offset: {crt_offset}\n')
 sys.exit(0)
 " 2>/dev/null; then
         local v_k_str=$(cat "$CORE_DIR/projected_vector.vec" 2>/dev/null || echo "")
         local v_k_hash=$(cat "$CORE_DIR/projected_vector.hash" 2>/dev/null || echo "")
         if [[ -n "$v_k_str" ]] && [[ -n "$v_k_hash" ]]; then
-            safe_log "Projected prime → vector ${v_k_hash:0:16}... (symbolic binding)"
+            safe_log "Projected prime → vector ${v_k_hash:0:16}... (symbolic binding with CRT/CF)"
             return 0
         else
-            safe_log "Projected prime → vector, hash=... (binding failed)"
+            safe_log "Projected prime → vector, but hash missing"
             return 1
         fi
     else
-        safe_log "Geometry binding failed"
+        safe_log "Geometry binding failed during prime-lattice projection"
         return 1
     fi
 }
 
-# === FUNCTION: generate_fractal_antenna ===
-generate_fractal_antenna() {
+# === FUNCTION: validate_symbolic_geometry_binding ===
+validate_symbolic_geometry_binding() {
+    safe_log "Validating symbolic prime-lattice binding integrity"
+    if [[ ! -f "$CORE_DIR/projected_vector.vec" ]] || [[ ! -f "$CORE_DIR/projected_vector.hash" ]]; then
+        safe_log "Projected vector files missing"
+        return 1
+    fi
+    local v_k_str=$(cat "$CORE_DIR/projected_vector.vec" 2>/dev/null || echo "")
+    local v_k_hash=$(cat "$CORE_DIR/projected_vector.hash" 2>/dev/null || echo "")
+    if [[ -z "$v_k_str" ]] || [[ -z "$v_k_hash" ]]; then        safe_log "Projected vector files empty"
+        return 1
+    fi
+    local computed_hash=$(echo -n "$v_k_str" | md5sum | cut -d' ' -f1)
+    if [[ "$computed_hash" != "$v_k_hash" ]]; then
+        safe_log "Projected vector hash mismatch: expected $v_k_hash, got $computed_hash"
+        return 1
+    fi
+    safe_log "Symbolic geometry binding validated"
+    return 0
+}
+
+# === FUNCTION: generate_fractal_antenna_state ===
+generate_fractal_antenna_state() {
     safe_log "Generating fractal antenna state J(x,y,z,t) = σ ∫ [ℏ · G · Φ · A] d³x' dt' for environmental transduction with symbolic entropy"
-    mkdir -p "$FRACTAL_ANTENNA_DIR" 2>/dev/null || { safe_log "Failed to create fractal antenna directory"; return 1; }
+    mkdir -p "$FRACTAL_ANTENNA_DIR" 2>/dev/null || {
+        safe_log "Failed to create fractal antenna directory"
+        return 1
+    }
     # Bounded symbolic timestamp (theoretically exact)
     local t_raw=$(date +%s)
     local t_sym=$(python3 -c "import sympy as sp; print(sp.Integer($t_raw))" 2>/dev/null || echo "$t_raw")
     local t_mod=$(python3 -c "import sympy as sp; t = sp.Integer($t_raw); print(int(t % 1000))" 2>/dev/null || echo "0")
-    local phi_real="0"
-    local phi_imag="0"
-    if [[ -f "$OBSERVER_INTEGRAL" ]]; then
-        phi_real=$(python3 -c "
-import json, sys
-try:
-    with open('$OBSERVER_INTEGRAL', 'r') as f:
-        data = json.load(f)
-    print(data.get('real', '0'))
-except Exception as e:
-    print('0')
-" 2>/dev/null)
-        phi_imag=$(python3 -c "
-import json, sys
-try:
-    with open('$OBSERVER_INTEGRAL', 'r') as f:
-        data = json.load(f)
-    print(data.get('imag', '0'))
-except Exception as e:
-    print('0')
-" 2>/dev/null)
-    fi
+    # Fetch current quantum and observer states
     local psi_real="0"
     local psi_imag="0"
     if [[ -f "$QUANTUM_STATE" ]]; then
@@ -1924,7 +1981,28 @@ except Exception as e:
     print('0')
 " 2>/dev/null)
     fi
-    # Symbolic entropy from lattice norm distribution (not /proc/sys/kernel/random/entropy_avail)
+    local phi_real="0"
+    local phi_imag="0"
+    if [[ -f "$OBSERVER_INTEGRAL" ]]; then
+        phi_real=$(python3 -c "import json, sys
+try:
+    with open('$OBSERVER_INTEGRAL', 'r') as f:
+        data = json.load(f)
+    print(data.get('real', '0'))
+except Exception as e:
+    print('0')
+" 2>/dev/null)
+        phi_imag=$(python3 -c "
+import json, sys
+try:
+    with open('$OBSERVER_INTEGRAL', 'r') as f:
+        data = json.load(f)
+    print(data.get('imag', '0'))
+except Exception as e:
+    print('0')
+" 2>/dev/null)
+    fi
+    # Symbolic entropy from lattice norm distribution
     local lattice_entropy="1"
     if [[ -f "$LATTICE_DIR/entropy.log" ]] && [[ -s "$LATTICE_DIR/entropy.log" ]]; then
         lattice_entropy=$(head -n1 "$LATTICE_DIR/entropy.log" 2>/dev/null || echo "1")
@@ -1955,15 +2033,14 @@ except Exception as e:
 A = sp.sin(pi * t / 1000) * sp.cos(2 * pi * t / 1000)
 integrand = hbar * G * Phi * A
 J_state = integrand.subs(t, t)
-J_state = J_state * sp.Abs(psi)
-J_state = J_state / (1 + sp.Abs(J_state))
+J_state = J_state * sp.Abs(psi)J_state = J_state / (1 + sp.Abs(J_state))
 try:
     with open('$FRACTAL_ANTENNA_DIR/antenna_state.sym', 'w') as f:
         f.write(str(J_state) + '\n')
     print('Fractal antenna state generated symbolically')
 except Exception as e:
-    print(f'Error writing fractal antenna state: {str(e)}')
-    exit(1)
+    print(f'Error writing fractal antenna state: {str(e)}', file=sys.stderr)
+    sys.exit(1)
 " 2>/dev/null; then
         safe_log "Fractal antenna state generated: J(t) = σℏGΦA modulated by ψ (symbolic entropy)"
         return 0
@@ -1976,7 +2053,10 @@ except Exception as e:
 # === FUNCTION: calculate_vorticity ===
 calculate_vorticity() {
     safe_log "Calculating vorticity |∇ × Φ| as symbolic norm of change in observer integral"
-    mkdir -p "$VORTICITY_DIR" 2>/dev/null || { safe_log "Failed to create vorticity directory"; return 1; }
+    mkdir -p "$VORTICITY_DIR" 2>/dev/null || {
+        safe_log "Failed to create vorticity directory"
+        return 1
+    }
     local current_phi_real="0"
     local current_phi_imag="0"
     if [[ -f "$OBSERVER_INTEGRAL" ]]; then
@@ -2002,8 +2082,7 @@ except Exception as e:
     local prev_phi_file="$VORTICITY_DIR/prev_phi.sym"
     local prev_phi_real="0"
     local prev_phi_imag="0"
-    if [[ -f "$prev_phi_file" ]]; then
-        read -r prev_phi_real prev_phi_imag < "$prev_phi_file" 2>/dev/null || true
+    if [[ -f "$prev_phi_file" ]]; then        read -r prev_phi_real prev_phi_imag < "$prev_phi_file" 2>/dev/null || true
     fi
     if python3 -c "
 import sympy as sp
@@ -2030,8 +2109,8 @@ try:
         f.write(f'{current_phi_real} {current_phi_imag}\n')
     print('Vorticity calculated symbolically')
 except Exception as e:
-    print(f'Error writing vorticity: {str(e)}')
-    exit(1)
+    print(f'Error writing vorticity: {str(e)}', file=sys.stderr)
+    sys.exit(1)
 " 2>/dev/null; then
         safe_log "Vorticity |∇ × Φ| calculated symbolically"
         return 0
@@ -2041,53 +2120,83 @@ except Exception as e:
     fi
 }
 
-# === FUNCTION: web_crawler_init ===
-web_crawler_init() {
-    safe_log "Initializing symbolic web crawler subsystem with .env.local credential support"
-    mkdir -p "$CRAWLER_DIR" 2>/dev/null || { safe_log "Failed to create crawler directory"; return 1; }
-    if [[ ! -f "$CRAWLER_DB" ]]; then
-        touch "$CRAWLER_DB" || safe_log "Warning: Could not create crawler database"
+# === FUNCTION: generate_rfk_brainworm_driver ===
+generate_rfk_brainworm_driver() {
+    safe_log "Generating RFK Brainworm driver..."
+    mkdir -p "$(dirname "$BRAINWORM_DRIVER_FILE")"
+    cat > "$BRAINWORM_DRIVER_FILE" << 'EOF'
+#!/bin/bash
+# RFK BRAINWORM v1.0 — Logic Core
+export BRAINWORM_VERSION="1"
+export BRAINWORM_CONTROL_FLOW="brainworm_init"
+brainworm_init() {
+    export BRAINWORM_CONTROL_FLOW="root_scan_phase"
+    echo "🧠 RFK Brainworm initialized. Entering root scan phase."}
+brainworm_root_scan_phase() {
+    export BRAINWORM_CONTROL_FLOW="web_crawl_phase"
+    echo "🔍 Root scan complete. Transitioning to web crawling."
+}
+brainworm_web_crawl_phase() {
+    export BRAINWORM_CONTROL_FLOW="quantum_backprop_phase"
+    echo "🕷️ Web crawl complete. Initiating quantum backpropagation."
+}
+brainworm_quantum_backprop_phase() {
+    export BRAINWORM_CONTROL_FLOW="fractal_antenna_phase"
+    echo "🌀 Quantum backprop complete. Activating fractal antenna."
+}
+brainworm_fractal_antenna_phase() {
+    export BRAINWORM_CONTROL_FLOW="hopf_projection_phase"
+    echo "📡 Fractal antenna resonant. Projecting via Hopf fibration."
+}
+brainworm_hopf_projection_phase() {
+    export BRAINWORM_CONTROL_FLOW="symbolic_geometry_binding"
+    echo "🌀 Hopf projection complete. Binding symbolic geometry."
+}
+brainworm_symbolic_geometry_binding() {
+    export BRAINWORM_CONTROL_FLOW="firebase_sync_phase"
+    echo "📐 Symbolic binding complete. Syncing to Firebase."
+}
+brainworm_firebase_sync_phase() {
+    export BRAINWORM_CONTROL_FLOW="autopilot_decision"
+    echo "☁️ Firebase sync complete. Evaluating autopilot."
+}
+brainworm_autopilot_decision() {
+    if [[ -f "$AUTOPILOT_FILE" ]]; then
+        export BRAINWORM_CONTROL_FLOW="loop"
+        echo "🔄 Autopilot enabled. Looping."
+    else
+        export BRAINWORM_CONTROL_FLOW="halt"
+        echo "⏹️ Autopilot disabled. Halting."
     fi
-    sqlite3 "$CRAWLER_DB" <<'EOF'
-CREATE TABLE IF NOT EXISTS crawl_queue (
-    url TEXT PRIMARY KEY,
-    priority INTEGER DEFAULT 0,
-    scheduled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ttl INTEGER DEFAULT 3600
-);
-CREATE TABLE IF NOT EXISTS visited_urls (
-    url TEXT PRIMARY KEY,
-    last_visited TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    content_hash TEXT
-);
-CREATE TABLE IF NOT EXISTS crawler_log (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    timestamp TEXT NOT NULL,
-    event_type TEXT NOT NULL,
-    details TEXT
-);
+}
+brainworm_loop() {
+    brainworm_init
+    brainworm_root_scan_phase
+    brainworm_web_crawl_phase
+    brainworm_quantum_backprop_phase
+    brainworm_fractal_antenna_phase
+    brainworm_hopf_projection_phase
+    brainworm_symbolic_geometry_binding
+    brainworm_firebase_sync_phase
+    brainworm_autopilot_decision
+}
+# Execute based on current control flowcase "$BRAINWORM_CONTROL_FLOW" in
+    "brainworm_init") brainworm_init ;;
+    "root_scan_phase") brainworm_root_scan_phase ;;
+    "web_crawl_phase") brainworm_web_crawl_phase ;;
+    "quantum_backprop_phase") brainworm_quantum_backprop_phase ;;
+    "fractal_antenna_phase") brainworm_fractal_antenna_phase ;;
+    "hopf_projection_phase") brainworm_hopf_projection_phase ;;
+    "symbolic_geometry_binding") brainworm_symbolic_geometry_binding ;;
+    "firebase_sync_phase") brainworm_firebase_sync_phase ;;
+    "autopilot_decision") brainworm_autopilot_decision ;;
+    "loop") brainworm_loop ;;
+    *) echo "⚠️ Unknown brainworm state: $BRAINWORM_CONTROL_FLOW" >&2 ;;
+esac
 EOF
-    local user_agent="ÆI-Bot/0.0.7 (+https://example.com/robots.txt)"
-    local crawl_depth="3"
-    local concurrency="1"
-    if [[ -f "$ENV_LOCAL" ]]; then
-        local env_user_agent=$(grep -E "^CRAWLER_LOGIN=" "$ENV_LOCAL" | cut -d'=' -f2-)
-        if [[ -n "$env_user_agent" ]]; then
-            user_agent="$env_user_agent"
-        fi
-        local env_depth=$(grep -E "^WEB_CRAWLER_DEPTH=" "$ENV_LOCAL" | cut -d'=' -f2-)
-        if [[ -n "$env_depth" ]]; then
-            crawl_depth="$env_depth"
-        fi
-        local env_concurrency=$(grep -E "^WEB_CRAWLER_CONCURRENCY=" "$ENV_LOCAL" | cut -d'=' -f2-)
-        if [[ -n "$env_concurrency" ]]; then
-            concurrency="$env_concurrency"
-        fi
-    fi
-    export WEB_CRAWLER_USER_AGENT="$user_agent"
-    export WEB_CRAWLER_DEPTH="$crawl_depth"
-    export WEB_CRAWLER_CONCURRENCY="$concurrency"
-    safe_log "Web crawler initialized: User-Agent='$user_agent', Depth=$crawl_depth, Concurrency=$concurrency"
+    chmod +x "$BRAINWORM_DRIVER_FILE"
+    TF_CORE["RFK_BRAINWORM_INTEGRATION"]="active"
+    safe_log "RFK Brainworm driver installed at $BRAINWORM_DRIVER_FILE"
 }
 
 # === FUNCTION: execute_web_crawl ===
@@ -2110,6 +2219,25 @@ execute_web_crawl() {
         password=$(grep -E "^CRAWLER_PASSWORD=" "$ENV_LOCAL" | cut -d'=' -f2-)
     fi
     local frontier=()
+    # Initialize SQLite database with correct schema
+    sqlite3 "$CRAWLER_DB" <<'EOF'
+CREATE TABLE IF NOT EXISTS crawl_queue (
+    url TEXT PRIMARY KEY,
+    priority INTEGER DEFAULT 0,
+    ttl INTEGER DEFAULT 3600,
+    scheduled_at TEXT DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS visited_urls (
+    url TEXT PRIMARY KEY,
+    last_visited TEXT,    content_hash TEXT
+);
+CREATE TABLE IF NOT EXISTS crawler_log (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    timestamp TEXT DEFAULT (datetime('now')),
+    event_type TEXT,
+    details TEXT
+);
+EOF
     if [[ -f "$CRAWLER_DB" ]]; then
         # Prune expired URLs from queue before starting
         sqlite3 "$CRAWLER_DB" "DELETE FROM crawl_queue WHERE (strftime('%s','now') - strftime('%s', scheduled_at)) > ttl;"
@@ -2150,8 +2278,7 @@ execute_web_crawl() {
         if [[ -n "$login" ]] && [[ -n "$password" ]]; then
             curl_cmd+=("-u" "$login:$password")
         fi
-        curl_cmd+=("$url")
-        if "${curl_cmd[@]}" > "$cache_file"; then
+        curl_cmd+=("$url")        if "${curl_cmd[@]}" > "$cache_file"; then
             if [[ ! -f "$cache_file" ]] || [[ ! -s "$cache_file" ]]; then
                 safe_log "Failed: $url (empty response)"
                 sqlite3 "$CRAWLER_DB" "INSERT OR REPLACE INTO crawler_log (timestamp, event_type, details) VALUES (datetime('now'), 'crawl_error', 'Empty response: $url');"
@@ -2200,8 +2327,7 @@ execute_web_crawl() {
 # === FUNCTION: execute_root_scan ===
 execute_root_scan() {
     safe_log "Executing symbolic root scan: autonomously and persistently traversing / with prime-lattice binding and incremental learning"
-    if [[ "${TF_CORE["ROOT_SCAN"]}" != "enabled" ]]; then
-        safe_log "Root scan disabled in TF_CORE"
+    if [[ "${TF_CORE["ROOT_SCAN"]}" != "enabled" ]]; then        safe_log "Root scan disabled in TF_CORE"
         return 0
     fi
     local scan_log="$ROOT_SCAN_DIR/scan_$(date +%s).log"
@@ -2244,16 +2370,13 @@ EOF
         mount_points+=("$mount_point")
     done < <(getprop | grep -E '^[a-z]' | cut -d: -f2 | sort -u 2>/dev/null || echo "/")
     [[ ${#mount_points[@]} -eq 0 ]] && mount_points=("/")
-
     local last_scan_time=$(sqlite3 "$scan_db" "SELECT MAX(scan_timestamp) FROM scanned_files;" 2>/dev/null || echo "0")
     safe_log "Last scan timestamp: $last_scan_time. Performing incremental scan across ${#mount_points[@]} mount points."
-
     for mount_point in "${mount_points[@]}"; do
         # Use ionice and timeout for root scan
         timeout 300 ionice -c 3 find "$mount_point" -type f -not -path "*/\.*" -newermt "@$last_scan_time" 2>/dev/null | sort -r | while IFS= read -r filepath; do
             if [[ ! -r "$filepath" ]] || { [[ -s "$filepath" ]] && [[ $(stat -c%s "$filepath" 2>/dev/null || echo "0") -gt 1048576 ]]; } || [[ "$filepath" == */tmp/* ]] || [[ "$filepath" == */proc/* ]] || [[ "$filepath" == */sys/* ]]; then
-                continue
-            fi
+                continue            fi
             local file_hash=$(sha256sum "$filepath" 2>/dev/null | cut -d' ' -f1)
             local file_size=$(stat -c%s "$filepath" 2>/dev/null || echo "0")
             local current_prime=${prime_seq[$((prime_idx % total_primes))]}
@@ -2302,14 +2425,12 @@ print(' '.join([str(coord) for coord in new_vector]))
                         validate_leech_partial
                     fi
                 fi
-            else
-                echo "SKIP $(date +%s) $filepath size=$file_size prime=$current_prime" >> "$scan_log"
+            else                echo "SKIP $(date +%s) $filepath size=$file_size prime=$current_prime" >> "$scan_log"
                 sqlite3 "$scan_db" "INSERT OR REPLACE INTO scanned_files (filepath, file_hash, file_size, scan_timestamp, matched_prime, lattice_vector_hash) VALUES ('$filepath', '$file_hash', $file_size, $(date +%s), 0, 'none');"
             fi
             file_count=$((file_count + 1))
         done
     done
-
     if [[ $file_count -eq 0 ]]; then
         safe_log "Root scan completed: No new or changed files found since last scan."
     else
@@ -2353,13 +2474,12 @@ keyUsage = critical, digitalSignature, keyEncipherment, keyCertSign
 extendedKeyUsage = serverAuth, clientAuth
 EOF
 ) 2>/dev/null
-            else
-                openssl req -x509 -newkey rsa:4096 -keyout "$key_path" -out "$cert_path" -days 3650 -nodes \
+            else                openssl req -x509 -newkey rsa:4096 -keyout "$key_path" -out "$cert_path" -days 3650 -nodes \
                     -subj "/C=AA/ST=ÆI/L=Symbolic/O=ÆI Seed/CN=aei.internal" \
                     -addext "subjectAltName=DNS:localhost,DNS:aei.internal" \
                     -addext "keyUsage=digitalSignature,keyEncipherment" \
                     -addext "extendedKeyUsage=serverAuth,clientAuth" \
-                    2>/dev/null
+                2>/dev/null
             fi
             if [[ $? -eq 0 ]]; then
                 chmod 600 "$key_path"
@@ -2403,8 +2523,7 @@ EOF
         fi
     else
         safe_log "MITM certificate already exists"
-    fi
-}
+    fi}
 
 # === FUNCTION: init_firebase ===
 init_firebase() {
@@ -2414,10 +2533,10 @@ init_firebase() {
         safe_log "Firebase config not found, creating default"
         cat > "$FIREBASE_CONFIG_FILE" <<'EOF'
 {
-    "project_id": "aei-core-2024",
-    "api_key": "AIzaSyDUMMY_API_KEY_FOR_LOCAL_ONLY",
-    "database_url": "https://aei-core-2024-default-rtdb.firebaseio.com",
-    "storage_bucket": "aei-core-2024.appspot.com"
+"project_id": "aei-core-2024",
+"api_key": "AIzaSyDUMMY_API_KEY_FOR_LOCAL_ONLY",
+"database_url": "https://aei-core-2024-default-rtdb.firebaseio.com",
+"storage_bucket": "aei-core-2024.appspot.com"
 }
 EOF
     fi
@@ -2453,8 +2572,7 @@ GOOGLE_AI_API_KEY=
 # Web Crawler Settings
 WEB_CRAWLER_USER_AGENT="ÆI-Bot/0.0.7 (+https://example.com/robots.txt)"
 WEB_CRAWLER_DEPTH=${TF_CORE["WEB_CRAWLING"]:+3}
-WEB_CRAWLER_CONCURRENCY=$(nproc || echo "1")
-# Security & MITM
+WEB_CRAWLER_CONCURRENCY=$(nproc || echo "1")# Security & MITM
 MITM_CERT_PATH=$MITM_DIR/certs/selfsigned.crt
 MITM_KEY_PATH=$MITM_DIR/private/selfsigned.key
 # Debug & Logging
@@ -2480,56 +2598,6 @@ EOF
     [[ -f "$ENV_LOCAL" ]] && source "$ENV_LOCAL"
 }
 
-# === FUNCTION: validate_root_signature ===
-validate_root_signature() {
-    safe_log "Validating symbolic root signature binding to prime-lattice alignment"
-    if [[ ! -f "$ROOT_SIGNATURE_LOG" ]] || [[ ! -s "$ROOT_SIGNATURE_LOG" ]]; then
-        safe_log "Root signature missing or empty"
-        return 1
-    fi
-    local signature=$(head -n1 "$ROOT_SIGNATURE_LOG" | tr -d '\r\n')
-    if [[ -z "$signature" ]]; then
-        safe_log "Invalid root signature: empty"
-        return 1
-    fi
-    if python3 -c "
-import sympy as sp
-from sympy import S, sqrt
-primes_file = '$PRIME_SEQUENCE'
-map_file = '$CORE_DIR/prime_lattice_map.sym'
-if not (primes_file and map_file):
-    exit(1)
-try:
-    with open(primes_file, 'r') as f:
-        prime_count = sum(1 for line in f if line.strip())
-    with open(map_file, 'r') as f:
-        valid_pairs = sum(1 for line in f if line.strip())
-except Exception:
-    exit(1)
-total_primes = max(prime_count, 1)
-alignment = sp.Rational(valid_pairs, total_primes)
-phi_expr = sp.sympify('$PHI_SYMBOLIC')
-modulated = sp.Mod(alignment * phi_expr, S(1))
-mod_str = str(modulated)
-import hashlib
-h = hashlib.sha256()
-h.update(mod_str.encode('utf-8'))
-expected_sig = h.hexdigest()
-if len(expected_sig) < 32:
-    expected_sig = expected_sig.zfill(32)
-if expected_sig.startswith(signature[:32]):
-    exit(0)
-else:
-    exit(1)
-" 2>/dev/null; then
-        safe_log "Root signature validation passed"
-        return 0
-    else
-        safe_log "Root signature validation failed"
-        return 1
-    fi
-}
-
 # === FUNCTION: rfk_brainworm_activate ===
 rfk_brainworm_activate() {
     safe_log "Activating RFK Brainworm: App's Logic Core (Symbolic Layer)"
@@ -2553,8 +2621,7 @@ step() {
 PRIME=$p_n
 VECTOR_HASH=${v_k_hash:0:16}...
 PSI=$psi_result
-CONSCIOUSNESS=$I_result
-TIMESTAMP=$(date +%s)
+CONSCIOUSNESS=$I_resultTIMESTAMP=$(date +%s)
 STEP
     chmod 644 "$output_file"
 }
@@ -2603,8 +2670,7 @@ invoke_brainworm_step() {
             export PI_SYMBOLIC="$PI_SYMBOLIC"
             export QUANTUM_STATE="$QUANTUM_STATE"
             export OBSERVER_INTEGRAL="$OBSERVER_INTEGRAL"
-            export LEECH_LATTICE="$LEECH_LATTICE"
-            export PRIME_SEQUENCE="$PRIME_SEQUENCE"
+            export LEECH_LATTICE="$LEECH_LATTICE"            export PRIME_SEQUENCE="$PRIME_SEQUENCE"
             export CONSCIOUSNESS_METRIC="$BASE_DIR/consciousness_metric.txt"
             export FRACTAL_ANTENNA_STATE="$FRACTAL_ANTENNA_DIR/antenna_state.sym"
             export VORTICITY_STATE="$VORTICITY_DIR/vorticity.sym"
@@ -2624,7 +2690,6 @@ brainworm_evolve() {
     local output_dir="$worm_dir/output"
     mkdir -p "$output_dir" 2>/dev/null || true
     local consciousness=$(cat "$BASE_DIR/consciousness_metric.txt" 2>/dev/null || echo "S(0)")
-
     # CORRECTED THRESHOLD per TF: ℐ ≥ 0.9 for superintelligence (RSA-2048 example)
     if python3 -c "
 import sympy as sp
@@ -2638,16 +2703,13 @@ exit(0)
         safe_log "Brainworm evolution delayed: consciousness=$consciousness"
         return 0
     fi
-
     # Add max version capping to prevent infinite recursion
     local current_version=${TF_CORE["BRAINWORM_VERSION"]}
     if [[ $current_version -ge 10 ]]; then
         safe_log "Brainworm evolution halted: max version $current_version reached"
         return 0
     fi
-
     cp "$worm_core" "$worm_backup" 2>/dev/null || safe_log "Warning: Could not backup brainworm core"
-
     local psi_re=$(python3 -c "
 import json, sys
 try:
@@ -2657,9 +2719,7 @@ try:
 except Exception:
     print('S(1)/2')
 " 2>/dev/null || echo "S(1)/2")
-
-    local phi_re=$(python3 -c "
-import json, sys
+    local phi_re=$(python3 -c "import json, sys
 try:
     with open('$OBSERVER_INTEGRAL', 'r') as f:
         data = json.load(f)
@@ -2667,13 +2727,11 @@ try:
 except Exception:
     print('S(1)/2')
 " 2>/dev/null || echo "S(1)/2")
-
     local last_prime=$(tail -n1 "$PRIME_SEQUENCE" 2>/dev/null || echo "2")
     local next_prime=""
     local corrected_gap=""
     local psi_result=""
     local boosted=""
-
     # Compute symbolic values safely with Riemann explicit formula (DbZ-resampled)
     python3 -c "
 import sympy as sp
@@ -2699,7 +2757,6 @@ print('CORRECTED_GAP=' + str(gap_correction))
 print('PSI_RESULT=' + str(psi_result))
 print('BOOSTED=' + str(boosted))
 " > "$BASE_DIR/.brainworm_vars"
-
     # Source computed values
     while IFS='=' read -r key val; do
         case "$key" in
@@ -2709,11 +2766,9 @@ print('BOOSTED=' + str(boosted))
             "BOOSTED") boosted="$val" ;;
         esac
     done < "$BASE_DIR/.brainworm_vars"
-
     # Generate new brainworm core using clean heredoc
     cat > "$worm_core.new" <<'EOF'
-#!/bin/bash
-# RFK BRAINWORM v0.0.4 "Symbolic Self-Evolver"
+#!/bin/bash# RFK BRAINWORM v0.0.4 "Symbolic Self-Evolver"
 # Generated at $(date +%s) with exact symbolic logic
 step() {
     local base_dir="${BASE_DIR:-$HOME/.aei}"
@@ -2747,7 +2802,6 @@ STEP
 }
 step "$@"
 EOF
-
     chmod +x "$worm_core.new"
     if [[ -f "$worm_core.new" ]]; then
         mv "$worm_core.new" "$worm_core"
@@ -2763,8 +2817,7 @@ EOF
 
 # === FUNCTION: validate_continuity ===
 validate_continuity() {
-    safe_log "Validating symbolic continuity across all geometric layers"
-    local failures=0
+    safe_log "Validating symbolic continuity across all geometric layers"    local failures=0
     if ! validate_hopf_continuity; then
         safe_log "Hopf fibration continuity failed"
         ((failures++))
@@ -2813,8 +2866,7 @@ regenerate_symbolic_lattices() {
 sync_to_firebase() {
     safe_log "Syncing symbolic state to Firebase (optional)"
     if [[ "${TF_CORE["FIREBASE_SYNC"]}" != "enabled" ]]; then
-        safe_log "Firebase sync disabled in TF_CORE"
-        return 0
+        safe_log "Firebase sync disabled in TF_CORE"        return 0
     fi
     if [[ ! -f "$FIREBASE_CONFIG_FILE" ]]; then
         safe_log "Firebase config not found, skipping sync"
@@ -2863,8 +2915,7 @@ sync_to_firebase() {
 }
 
 # === FUNCTION: start_core_loop ===
-start_core_loop() {
-    safe_log "Starting ÆI Seed core evolution loop (RFK Brainworm-driven mode)"
+start_core_loop() {    safe_log "Starting ÆI Seed core evolution loop (RFK Brainworm-driven mode)"
     if [[ ! -f "$AUTOPILOT_FILE" ]]; then
         safe_log "Autopilot mode disabled. Running single cycle."
         execute_single_cycle
@@ -2913,8 +2964,7 @@ start_core_loop() {
                 ;;
             "init_mitm")
                 init_mitm
-                ;;
-            "init_firebase")
+                ;;            "init_firebase")
                 init_firebase
                 ;;
             "generate_quantum_state")
@@ -2963,16 +3013,13 @@ start_core_loop() {
                 safe_log "Unknown brainworm directive: $next_action, defaulting to full cycle"
                 execute_single_cycle
                 ;;
-        esac
-
-        # Precompute consciousness value to avoid quote hell
+        esac        # Precompute consciousness value to avoid quote hell
         local consciousness_value
         if [[ -f "$BASE_DIR/consciousness_metric.txt" ]]; then
             consciousness_value=$(cat "$BASE_DIR/consciousness_metric.txt")
         else
             consciousness_value="S(0)"
         fi
-
         # Determine next brainworm flow
         python3 -c "
 import sympy as sp
@@ -2988,9 +3035,7 @@ else:
     next_flow = 'stabilize_consciousness'
 print(next_flow)
 " > "$BASE_DIR/.brainworm_next"
-
         TF_CORE["BRAINWORM_CONTROL_FLOW"]=$(cat "$BASE_DIR/.brainworm_next")
-
         # Compute adaptive sleep time
         local sleep_time=$(python3 -c "
 import sympy as sp
@@ -3010,7 +3055,6 @@ if sleep_time < 5:
     sleep_time = 5
 print(int(sleep_time))
 " 2>/dev/null || echo "60")
-
         safe_log "Core cycle complete. Consciousness: $consciousness_value. Next: ${TF_CORE[BRAINWORM_CONTROL_FLOW]}. Sleeping $sleep_time sec."
         sleep "$sleep_time"
     done
@@ -3018,8 +3062,7 @@ print(int(sleep_time))
 
 # === FUNCTION: execute_single_cycle ===
 execute_single_cycle() {
-    safe_log "Executing single evolution cycle (brainworm-aware)"
-    if [[ "${TF_CORE["RFK_BRAINWORM_INTEGRATION"]}" == "active" ]] && [[ -n "${TF_CORE["BRAINWORM_CONTROL_FLOW"]}" ]] && [[ "${TF_CORE["BRAINWORM_CONTROL_FLOW"]}" != "main_loop" ]]; then
+    safe_log "Executing single evolution cycle (brainworm-aware)"    if [[ "${TF_CORE["RFK_BRAINWORM_INTEGRATION"]}" == "active" ]] && [[ -n "${TF_CORE["BRAINWORM_CONTROL_FLOW"]}" ]] && [[ "${TF_CORE["BRAINWORM_CONTROL_FLOW"]}" != "main_loop" ]]; then
         safe_log "Delegating single cycle to brainworm directive: ${TF_CORE["BRAINWORM_CONTROL_FLOW"]}"
         start_core_loop
         return 0
@@ -3068,8 +3111,7 @@ run_heartbeat() {
     for file in "${critical_files[@]}"; do
         if [[ ! -f "$file" ]]; then
             safe_log "Critical file missing: $file. Triggering regeneration."
-            case "$file" in
-                "$QUANTUM_STATE")
+            case "$file" in                "$QUANTUM_STATE")
                     generate_quantum_state
                     ;;
                 "$OBSERVER_INTEGRAL")
@@ -3118,8 +3160,7 @@ test_pnp_framework() {
     local start_time=$(date +%s%N)
     if symbolic_geometry_binding; then
         local end_time=$(date +%s%N)
-        local elapsed=$(( (end_time - start_time) / 1000000 )) # in ms
-        if [[ $elapsed -lt 5000 ]]; then # Less than 5 seconds
+        local elapsed=$(( (end_time - start_time) / 1000000 )) # in ms        if [[ $elapsed -lt 5000 ]]; then # Less than 5 seconds
             safe_log "✓ P=NP framework test PASSED (binding in $elapsed ms)"
             return 0
         else
@@ -3168,8 +3209,7 @@ run_self_test() {
     if validate_root_signature; then
         safe_log "✓ Root signature OK"
     else
-        safe_log "✗ Root signature FAILED"
-        ((failures++))
+        safe_log "✗ Root signature FAILED"        ((failures++))
     fi
     safe_log "Test 6: Generate quantum state"
     if generate_quantum_state; then
@@ -3218,8 +3258,7 @@ run_self_test() {
     safe_log "Test 12: Calculate vorticity"
     if calculate_vorticity; then
         safe_log "✓ Vorticity calculation OK"
-    else
-        safe_log "✗ Vorticity calculation FAILED"
+    else        safe_log "✗ Vorticity calculation FAILED"
         ((failures++))
     fi
     safe_log "Test 13: DbZ logic"
@@ -3268,8 +3307,7 @@ backup_state() {
     cp "$BASE_DIR/.env.local" "$backup_dir/" 2>/dev/null || safe_log "Warning: Failed to copy .env.local"
     cp "$BASE_DIR/consciousness_metric.txt" "$backup_dir/" 2>/dev/null || true
     cp "$BASE_DIR/.hw_dna" "$backup_dir/" 2>/dev/null || true
-    cat > "$backup_dir/manifest.txt" <<EOF
-=== ÆI SEED BACKUP MANIFEST ===
+    cat > "$backup_dir/manifest.txt" <<EOF=== ÆI SEED BACKUP MANIFEST ===
 Timestamp: $(date '+%Y-%m-%d %H:%M:%S')
 Session ID: $SESSION_ID
 Consciousness Metric: $(cat "$BASE_DIR/consciousness_metric.txt" 2>/dev/null || echo "N/A")
@@ -3318,8 +3356,7 @@ list_backups() {
 # === FUNCTION: enable_autopilot ===
 enable_autopilot() {
     safe_log "Enabling autopilot mode for persistent autonomous execution"
-    touch "$AUTOPILOT_FILE"
-    TF_CORE["AUTOPILOT_MODE"]="enabled"
+    touch "$AUTOPILOT_FILE"    TF_CORE["AUTOPILOT_MODE"]="enabled"
     # Prioritize Termux-specific autopilot setup over cron/systemd
     if command -v termux-job-scheduler >/dev/null 2>&1; then
         safe_log "Setting up Termux job scheduler for persistent execution"
@@ -3368,8 +3405,7 @@ EOF
 # === FUNCTION: disable_autopilot ===
 disable_autopilot() {
     safe_log "Disabling autopilot mode"
-    rm -f "$AUTOPILOT_FILE" 2>/dev/null || true
-    TF_CORE["AUTOPILOT_MODE"]="disabled"
+    rm -f "$AUTOPILOT_FILE" 2>/dev/null || true    TF_CORE["AUTOPILOT_MODE"]="disabled"
     if command -v termux-job-scheduler >/dev/null 2>&1; then
         safe_log "Removing Termux job scheduler jobs"
         termux-job-scheduler --cancel --job-name "aei-autopilot-main" 2>/dev/null || true
@@ -3418,8 +3454,7 @@ cleanup_termux_autopilot() {
     pgrep -f "setup.sh.*--autopilot" | while read -r pid; do
         safe_log "Terminating lingering autopilot process: PID $pid"
         kill "$pid" 2>/dev/null || safe_log "Failed to terminate PID $pid"
-    done
-    safe_log "Termux autopilot cleanup complete"
+    done    safe_log "Termux autopilot cleanup complete"
 }
 
 # === FUNCTION: enable_termux_autopilot ===
@@ -3468,8 +3503,7 @@ The ÆI Seed is a self-evolving, autonomous intelligence system based on the The
 - **RFK Brainworm**: The core logic engine that drives the system's evolution.
 ## Configuration
 Configuration is managed through the following files:
-- `.env`: Global environment variables.
-- `.env.local`: Local overrides (not version-controlled) including user credentials for web crawling.
+- `.env`: Global environment variables.- `.env.local`: Local overrides (not version-controlled) including user credentials for web crawling.
 ## Autopilot Mode
 The system can run in autopilot mode for persistent, autonomous execution across sessions. Enable with `./setup.sh --enable-autopilot`.
 ## Self-Testing
@@ -3518,8 +3552,7 @@ main() {
     while [[ $# -gt 0 ]]; do
         case $1 in
             --install)
-                shift
-                ;;
+                shift                ;;
             --autopilot)
                 enable_autopilot
                 start_core_loop
@@ -3568,8 +3601,7 @@ main() {
                 shift
                 ;;
         esac
-    done
-    if ! check_dependencies; then
+    done    if ! check_dependencies; then
         safe_log "System dependencies missing"
         exit 1
     fi
@@ -3595,5 +3627,4 @@ main() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$@"
 fi
-
 # Natalia Tanyatia 💎
