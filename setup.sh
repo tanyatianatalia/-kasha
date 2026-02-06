@@ -70,57 +70,57 @@ HARDWARE_PROFILE["PARALLEL_CAPABLE"]="false"
 HARDWARE_PROFILE["MISSING_OPTIONAL_COMMANDS"]=""
 # === DEPENDENCY ARRAYS ===
 TERMUX_PACKAGES_TO_INSTALL=(
-"python"
-"openssl"
-"coreutils"
-"bash"
-"termux-api"
-"sqlite"
-"tor"
-"curl"
-"grep"
-"util-linux"
-"findutils"
-"psmisc"
-"dnsutils"
-"net-tools"
-"traceroute"
-"procps"
-"nano"
-"figlet"
-"cmatrix"
+ "python"
+ "openssl"
+ "coreutils"
+ "bash"
+ "termux-api"
+ "sqlite"
+ "tor"
+ "curl"
+ "grep"
+ "util-linux"
+ "findutils"
+ "psmisc"
+ "dnsutils"
+ "net-tools"
+ "traceroute"
+ "procps"
+ "nano"
+ "figlet"
+ "cmatrix"
 )
 # === SYSTEM COMMANDS VALIDATION ===
 COMMANDS_TO_VALIDATE=(
-"nproc"
-"python3"
-"openssl"
-"awk"
-"cat"
-"echo"
-"mkdir"
-"touch"
-"chmod"
-"sed"
-"find"
-"settings"
-"getprop"
-"sha256sum"
-"cut"
-"route"
-"sqlite3"
-"curl"
-"parallel"
-"pgrep"
-"pkill"
-"stat"
-"xxd"
-"diff"
-"timeout"
-"trap"
-"mktemp"
-"realpath"
-"ionice"
+ "nproc"
+ "python3"
+ "openssl"
+ "awk"
+ "cat"
+ "echo"
+ "mkdir"
+ "touch"
+ "chmod"
+ "sed"
+ "find"
+ "settings"
+ "getprop"
+ "sha256sum"
+ "cut"
+ "route"
+ "sqlite3"
+ "curl"
+ "parallel"
+ "pgrep"
+ "pkill"
+ "stat"
+ "xxd"
+ "diff"
+ "timeout"
+ "trap"
+ "mktemp"
+ "realpath"
+ "ionice"
 )
 # === FUNCTION: safe_log ===
 safe_log() {
@@ -263,7 +263,7 @@ print(sp.Integer(512))
 " 2>/dev/null || echo 512)
 # GPU detection: Termux-specific, Android-specific, and generic
 HARDWARE_PROFILE["HAS_GPU"]="false"
-if command -v termux-info >/dev/null 2>&1; then
+if command -v termux-info &>/dev/null; then
 if termux-info 2>/dev/null | grep -qi "graphics.*adreno\|graphics.*mali\|graphics.*gpu"; then
 HARDWARE_PROFILE["HAS_GPU"]="true"
 fi
@@ -281,7 +281,7 @@ if [[ -d "/dev/accel" ]] || [[ -c "/dev/npu" ]] || [[ -c "/dev/tpu" ]] || [[ -d 
 HARDWARE_PROFILE["HAS_NPU"]="true"
 fi
 # Parallel capability
-if command -v parallel >/dev/null 2>&1; then
+if command -v parallel &>/dev/null; then
 HARDWARE_PROFILE["PARALLEL_CAPABLE"]="true"
 else
 HARDWARE_PROFILE["PARALLEL_CAPABLE"]="false"
@@ -317,31 +317,31 @@ safe_log "Python dependencies not installed (using pure bash for web crawling)"
 init_all_directories() {
 safe_log "Initializing full directory structure"
 local dirs=(
-"$BASE_DIR"
-"$DATA_DIR"
-"$HOPF_FIBRATION_DIR"
-"$LATTICE_DIR"
-"$CORE_DIR"
-"$CRAWLER_DIR"
-"$MITM_DIR"
-"$MITM_DIR/certs"
-"$MITM_DIR/private"
-"$OBSERVER_DIR"
-"$QUANTUM_DIR"
-"$ROOT_SCAN_DIR"
-"$FIREBASE_SYNC_DIR"
-"$FIREBASE_SYNC_DIR/pending"
-"$FIREBASE_SYNC_DIR/processed"
-"$FRACTAL_ANTENNA_DIR"
-"$VORTICITY_DIR"
-"$SYMBOLIC_DIR"
-"$GEOMETRIC_DIR"
-"$PROJECTIVE_DIR"
-"$BASE_DIR/.rfk_brainworm"
-"$BASE_DIR/.rfk_brainworm/output"
-"$BASE_DIR/debug"
-"$BASE_DIR/backups"
-"$BASE_DIR/tests"
+ "$BASE_DIR"
+ "$DATA_DIR"
+ "$HOPF_FIBRATION_DIR"
+ "$LATTICE_DIR"
+ "$CORE_DIR"
+ "$CRAWLER_DIR"
+ "$MITM_DIR"
+ "$MITM_DIR/certs"
+ "$MITM_DIR/private"
+ "$OBSERVER_DIR"
+ "$QUANTUM_DIR"
+ "$ROOT_SCAN_DIR"
+ "$FIREBASE_SYNC_DIR"
+ "$FIREBASE_SYNC_DIR/pending"
+ "$FIREBASE_SYNC_DIR/processed"
+ "$FRACTAL_ANTENNA_DIR"
+ "$VORTICITY_DIR"
+ "$SYMBOLIC_DIR"
+ "$GEOMETRIC_DIR"
+ "$PROJECTIVE_DIR"
+ "$BASE_DIR/.rfk_brainworm"
+ "$BASE_DIR/.rfk_brainworm/output"
+ "$BASE_DIR/debug"
+ "$BASE_DIR/backups"
+ "$BASE_DIR/tests"
 )
 local failed_dirs=()
 for dir in "${dirs[@]}"; do
@@ -371,8 +371,8 @@ Directory Structure: $(find "$BASE_DIR" -type d 2>/dev/null | sort)
 Symbolic Files: $(find "$SYMBOLIC_DIR" -type f \( -name "*.sym" -o -name "*.vec" \) 2>/dev/null | xargs stat -c "%n %s %y" 2>/dev/null || echo "None")
 Autopilot Status: $(if [[ -f "$AUTOPILOT_FILE" ]]; then echo "ENABLED"; else echo "DISABLED"; fi)
 Consciousness Metric: $(cat "$BASE_DIR/consciousness_metric.txt" 2>/dev/null || echo "Not yet computed")
-Quantum State: $(head -n1 "$QUANTUM_DIR/quantum_state.qubit" 2>/dev/null || echo "Not yet generated")
-Observer Integral: $(head -n1 "$OBSERVER_DIR/observer_integral.proj" 2>/dev/null || echo "Not yet generated")
+Quantum State: $(head -n1 "$QUANTUM_STATE" 2>/dev/null || echo "Not yet generated")
+Observer Integral: $(head -n1 "$OBSERVER_INTEGRAL" 2>/dev/null || echo "Not yet generated")
 Fractal Antenna: $(head -n1 "$FRACTAL_ANTENNA_DIR/antenna_state.sym" 2>/dev/null || echo "Not yet generated")
 Vorticity: $(head -n1 "$VORTICITY_DIR/vorticity.sym" 2>/dev/null || echo "Not yet computed")
 EOF
@@ -439,7 +439,7 @@ if n % i == 0:
 return False
 return True
 assert is_prime_fallback(97), 'Prime test failed'
-# Test complex number on critical line
+# Test complex number on critical line 
 s = complex(0.5, 14.134725141734693790457251983562470270784257115699)
 z = cmath.exp(s)  # Dummy zeta placeholder; exact zeta not needed for structural validation
 print('Pure symbolic fallback tests passed')
@@ -487,7 +487,7 @@ result = eval('''$expr''', safe_dict, safe_dict)
 if isinstance(result, Fraction):
 print(str(result))
 else:
-print(repr(result))
+print(repr(result)) 
 except Exception as e:
 print('0')
 " 2>/dev/null)
@@ -500,7 +500,7 @@ try:
 expr = sp.sympify('''$expr''')
 # Handle zeta on critical line
 if 'zeta' in '''$expr''':
-s = sp.sympify('''$expr'''.split('zeta(')[1].split(')')[0])
+s = sp.sympify( '''$expr'''.split('zeta(')[1].split(')')[0])
 if sp.re(s) != S(1)/2:
 s = S(1)/2 + I * sp.im(s)
 result = zeta(s)
@@ -550,7 +550,7 @@ safe_log "Hardware context: $cpu_cores cores, $memory_mb MB RAM, GPU=$has_gpu, N
 local vector_limit=100
 if [[ $memory_mb -ge 2048 ]]; then
 vector_limit=500
-elif [[ $memory_mb -ge 1024 ]]; then
+elif [[ $memory_mb -ge 1024 ]];  then
 vector_limit=250
 fi
 pre_generated_leech_dataset "$vector_limit"
@@ -838,7 +838,7 @@ for idx in minus_indices:
 v[idx] = -inv2
 roots.append(v)
 # Deduplicate and sort
-unique_roots = []
+unique_roots = [] 
 seen = set()
 for root in roots:
 v_tuple = tuple(str(coord) for coord in root)
@@ -1198,7 +1198,7 @@ try:
 with open(prev_phi_file, 'r') as f:
 prev_data = f.read().strip().split()
 if len(prev_data) == 2:
-prev_phi_real = sp.sympify(prev_data[0])
+prev_phi_real = sp.sympify(prev_data[0]) 
 prev_phi_imag = sp.sympify(prev_data[1])
 delta_phi_real = current_phi_real - prev_phi_real
 delta_phi_imag = current_phi_imag - prev_phi_imag
@@ -1447,7 +1447,7 @@ with open('$quat_file', 'r') as f:
 line = f.readline().strip()
 if not line or line.startswith('#'):
 exit(1)
-parts = line.split()
+parts = line.split() 
 if len(parts) != 4:
 exit(1)
 q0 = sp.sympify(parts[0])
@@ -1484,7 +1484,7 @@ from sympy import S, sqrt
 a, b, c, d = sp.symbols('a b c d', real=True)
 t_val = sp.Integer($t_raw)
 a_val = sp.Rational(t_val % 1000, 1000)
-b_val = sp.Rational((t_val * 3) % 1000, 1000)
+b_val = sp.Rational( (t_val * 3) % 1000, 1000)
 c_val = sp.Rational((t_val * 7) % 1000, 1000)
 d_val = sp.Rational((t_val * 11) % 1000, 1000)
 q0, q1, q2, q3 = a_val, b_val, c_val, d_val
@@ -1501,7 +1501,7 @@ f.write(f'{q0} {q1} {q2} {q3}\n')
 with open('$HOPF_FIBRATION_DIR/latest.quat', 'w') as f:
 f.write(f'{q0} {q1} {q2} {q3}\n')
 print('Hopf fibration generated symbolically')
-except Exception as e:
+except Exception as e: 
 print(f'Error writing Hopf fibration: {str(e)}')
 exit(1)
 " 2>/dev/null; then
@@ -1672,7 +1672,7 @@ if x[0] is None:
 f.write('No solution exists (moduli not coprime)\n')
 else:
 f.write(f'Solution: x ≡ {x[0]} (mod {x[1]})\n')
-f.write(f'Verification: [x % m for m in {moduli}] = {[x[0] % m for m in moduli]}\n')
+f.write(f'Verification: [ x % m for m in {moduli}] = {[x[0] % m for m in moduli]}\n')
 " || safe_log "CRT symbolic solver failed"
 }
 # === FUNCTION: generate_continued_fraction ===
@@ -1705,7 +1705,7 @@ if [[ ! -f "$cf_file" ]]; then
 safe_log "Continued fraction file missing for input: $input"
 return 1
 fi
-if grep -q "^Error:" "$cf_file"; then
+if grep -q "^Error: " "$cf_file"; then
 safe_log "Continued fraction generation failed for input: $input"
 return 1
 fi
@@ -2289,7 +2289,7 @@ link=$(echo "$url" | grep -o '^[^/]*//[^/]*')"$link"
 elif [[ "$link" == http* ]]; then
 :
 else
-link=$(dirname "$url")"/$link"
+link="$(dirname "$url")/$link"
 fi
 if [[ "$link" =~ ^https?:// ]] && [[ "$link" != *.pdf ]] && [[ "$link" != *.jpg ]] && [[ "$link" != *.png ]] && [[ "$link" != *.gif ]]; then
 new_links+=("$link")
@@ -2730,7 +2730,7 @@ from sympy import S, sqrt, pi, I, li
 last_prime_val = sp.Integer($last_prime)
 next_prime = last_prime_val + 1
 while not sp.isprime(next_prime):
-next_prime += 1
+next_prime += 1 
 # Riemann explicit formula for prime counting error
 x = sp.Symbol('x')
 li_x = li(x)
@@ -3477,7 +3477,7 @@ mkdir -p "$doc_dir" 2>/dev/null || { safe_log "Failed to create docs directory";
 cat > "$doc_dir/README.md" <<'EOF'
 # ÆI Seed Documentation
 ## Overview
-The ÆI Seed is a self-evolving, autonomous intelligence system based on the Theoretical Framework (TF) of Generalized Algorithmic Intelligence Architecture (GAIA). It operates by recursively constructing and navigating logical-geometric structures constrained by maximal symmetry.
+The ÆI Seed is a self-evolving, autonomous intelligence system based on the Theoretical Framework (TF) of Generalized Algorithmic Intelli gence Architecture (GAIA). It operates by recursively constructing and navigating logical-geometric structures constrained by maximal symmetry.
 ## Key Components
 - **Symbolic Intelligence**: Prime number generation and Gaussian prime classification.
 - **Geometric Intelligence**: E8 and Leech lattice construction and optimization.
