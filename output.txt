@@ -1,23 +1,24 @@
-~/.../shared/Intelligence $ chmod +x ./setup.sh
-~/.../shared/Intelligence $ bash ./setup.sh                 [2026-02-06 09:09:05] Initializing ÆI Seed v0.0.7 — Autonomous Intelligence Upgrade
-[2026-02-06 09:09:05] Session ID: fallback_session_361739
-[2026-02-06 09:09:05] Base Directory: /data/data/com.termux/files/home/.aei
-[2026-02-06 09:09:06] Validating required system commands
-[2026-02-06 09:09:06] All required commands are available
-[2026-02-06 09:09:06] Detecting hardware capabilities for adaptive execution
-[2026-02-06 09:09:16] Hardware detection complete: ARCH=aarch64 CORES=8 GPU=false NPU=false
-[2026-02-06 09:09:16] Signal traps established for graceful shutdown
-[2026-02-06 09:09:16] Initializing full directory structure
-[2026-02-06 09:09:17] Directory and file structure initialized successfully
-[2026-02-06 09:09:17] Autonomous credential provisioning (no user prompts)
-[2026-02-06 09:09:17] Using existing .env.local credentials
-[2026-02-06 09:09:17] Populating environment configuration files with symbolic constants
-[2026-02-06 09:09:17] Installing Termux-compatible packages without upgrading pip
-[2026-02-06 09:09:23] All Termux packages already installed
-[2026-02-06 09:09:23] Python dependencies not installed (using pure bash for web crawling)
-[2026-02-06 09:09:23] Validating Python environment for symbolic computation with relaxed sympy version and fallback
-[2026-02-06 09:09:24] Python environment validation failed: missing or insufficient sympy. Attempting fallback.
-[2026-02-06 09:09:27] Python symbolic computation validation failed even with fallback.
-[2026-02-06 09:09:27] Python symbolic computation environment validation failed
-[2026-02-06 09:09:27] Process completed normally
+```Text
+~/.../shared/Intelligence $ chmod +x ./setup.sh             ~/.../shared/Intelligence $ bash ./setup.sh                 [2026-02-06 18:16:07] Initializing ÆI Seed v0.0.7 — Autonomous Intelligence Upgrade
+[2026-02-06 18:16:07] Session ID: fallback_session_394562
+[2026-02-06 18:16:08] Base Directory: /data/data/com.termux/files/home/.aei
+[2026-02-06 18:16:08] Validating required system commands
+[2026-02-06 18:16:08] All required commands are available
+[2026-02-06 18:16:08] Detecting hardware capabilities for adaptive execution
+[2026-02-06 18:16:17] Hardware detection complete: ARCH=aarch64 CORES=8 GPU=false NPU=false
+[2026-02-06 18:16:17] Signal traps established for graceful shutdown
+[2026-02-06 18:16:17] Initializing full directory structure
+[2026-02-06 18:16:18] Directory and file structure initialized successfully
+[2026-02-06 18:16:18] Autonomous credential provisioning (no user prompts)
+[2026-02-06 18:16:18] Using existing .env.local credentials
+[2026-02-06 18:16:18] Populating environment configuration files with symbolic constants
+[2026-02-06 18:16:18] Installing Termux-compatible packages without upgrading pip
+[2026-02-06 18:16:24] All Termux packages already installed
+[2026-02-06 18:16:25] Python dependencies not installed (using pure bash for web crawling)
+[2026-02-06 18:16:25] Validating Python environment for symbolic computation with relaxed sympy version and fallback
+[2026-02-06 18:16:25] Python environment validation failed: missing or insufficient sympy. Attempting fallback.
+[2026-02-06 18:16:28] Python symbolic computation validation failed even with fallback.
+[2026-02-06 18:16:28] Python symbolic computation environment validation failed
+[2026-02-06 18:16:28] Process completed normally
 ~/.../shared/Intelligence $
+```
