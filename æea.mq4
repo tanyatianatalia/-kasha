@@ -29,6 +29,9 @@ int y=min-2;
 int j;
 double signal = 0;
 double spread = Ask - Bid;
+int FVG=-1;
+string bL="";
+double BL[];
 double cA[];
 double cADX;
 double mSO;
@@ -95,6 +98,7 @@ double g=100*(1.0/3);
 double gf=100*((2.0/5)/3);
 int m;
 int n;
+string bottomLine;
 string Regime[];
 static double Premium[];
 static double Discount[];
@@ -597,6 +601,50 @@ void T()
     if((D!=0)&&(price<=D/*-com*/)) A=true;
     else if((D!=0)&&(price>D/*-com*/)) A=false;
     }
+void Top()
+    {
+    if(ObjectFind(0, bottomLine)==-1)
+        {
+        ArrayResize(BL, FVG+2);
+        BL[FVG+1]=price;
+        bottomLine=DoubleToString(price, Digits);
+        ObjectCreate(0, bottomLine, OBJ_HLINE, 0, 0, price);
+        ObjectSetInteger(0, bottomLine, OBJPROP_COLOR, clrBlue);
+        ObjectSetInteger(0, bottomLine, OBJPROP_STYLE, STYLE_SOLID);
+        ObjectSetInteger(0, bottomLine, OBJPROP_WIDTH, 1);
+        }
+    FVG++; bL=bottomLine;
+    }
+void Bott()
+    {
+    if(ObjectFind(0, bottomLine)==-1)
+        {
+        ArrayResize(BL, FVG+2);
+        BL[FVG+1]=price;
+        ObjectCreate(0, bottomLine, OBJ_HLINE, 0, 0, price);
+        bottomLine=DoubleToString(price, Digits);
+        ObjectSetInteger(0, bottomLine, OBJPROP_COLOR, clrRed);
+        ObjectSetInteger(0, bottomLine, OBJPROP_STYLE, STYLE_SOLID);
+        ObjectSetInteger(0, bottomLine, OBJPROP_WIDTH, 1);
+        }
+    FVG++; bL=bottomLine;
+    }
+void Deleter(string obj, double &prices[], int index)
+    {
+    int size = ArraySize(prices);
+    if((index<0)||(index>=size))
+        return; // iInvalid
+    for(int i=index; i<size-1; i++)
+    {
+        prices[i]=prices[i+1];
+    }
+    ArrayResize(prices, size-1);
+    if(ObjectFind(0, obj)!=-1)
+        {
+        ObjectDelete(0, obj);
+        FVG--;
+        }
+    }
 void A()
     {
     if((v==true)&&(lOrder_id!=-1))
@@ -910,12 +958,12 @@ void OnBar()
             if((((Price>signal)||(Price>ikPass)||(price>kPass)))&&(((iC==Cc)&&(Price>HH[min-(y+1)]))||((jC==Cc)&&(Price>=LL[3-(y+1)])&&(((open>=Stock)||(Price>=Stock))||((open>=iStock)||(Price>=iStock))))))
                 {
                 Alert("Buy: ",price);
-                if(((toll==0)||(count==0))&&(tally=="Sell")){if(toll==0){toll ++;} else if(count==0){count ++;}} if(Price>signal){fg="Up";} tally="Buy";
+                if((toll==0)&&(tally=="Sell")){toll ++;} if(Price>signal){fg="Up";} tally="Buy";
                 }
             if((((Price<signal)||(Price<ilPass)||(price<lPass)))&&(((jC==Cc)&&(Price<LL[min-(y+1)]))||((iC==Cc)&&(Price<=HH[3-(y+1)])&&(((open<=Sale)||(Price<=Sale))||((open<=iSale)||(Price<=iSale))))))
                 {
                 Alert("Sell: ",price);
-                if(((toll==0)||(count==0))&&(tally=="Buy")){if(toll==0){toll ++;} else if(count==0){count ++;}} if(Price<signal){fg="Down";} tally="Sell";
+                if((toll==0)&&(tally=="Buy")){toll ++;} if(Price<signal){fg="Down";} tally="Sell";
                 }
             if((toll==1)&&((tally=="Buy")||(fg=="Up")))
                 {
@@ -923,7 +971,7 @@ void OnBar()
                 if(((A==true)||(B==false))&&((u==true)||(v==false)))
                     {
                     B(); if(C==true){P();} else{Q();}
-                    } signal=0; toll=0; tally=""; GF=true;
+                    } signal=0; toll=0; tally=""; GF=true; Top();
                 }
             if((toll==1)&&((tally=="Sell")||(fg=="Down")))
                 {
@@ -931,7 +979,7 @@ void OnBar()
                 if(((A==false)||(B==true))&&((u==false)||(v==true)))
                     {
                     A(); if(C==false){P();} else{Q();}
-                    } signal=0; toll=0; tally=""; GF=true;
+                    } signal=0; toll=0; tally=""; GF=true; Bott();
                 }
             if((count==1)&&((tally=="Buy")||(fg=="Up")))
                 {
@@ -939,7 +987,7 @@ void OnBar()
                 if(((A==true)||(B==false))&&((u==true)||(v==false)))
                     {
                     B(); if(C==true){P();} else{Q();}
-                    } count=0; tally=""; GF=true;
+                    } count=0; tally=""; GF=true; Top();
                 }
             if((count==1)&&((tally=="Sell")||(fg=="Down")))
                 {
@@ -947,7 +995,7 @@ void OnBar()
                 if(((A==false)||(B==true))&&((u==false)||(v==true)))
                     {
                     A(); if(C==false){P();} else{Q();}
-                    } count=0; tally=""; GF=true;
+                    } count=0; tally=""; GF=true; Bott();
                 }
             }
         }
@@ -1141,6 +1189,19 @@ void OnTick()
     open=iOpen(Symbol(),0,1);
     iH=iHigh(Symbol(),0,1);
     iL=iLow(Symbol(),0,1);
+    if(FVG!=-1)
+        {
+        for(int ii=0; ii<FVG; ii++)
+            {
+            bottomLine=DoubleToString(BL[ii], Digits);
+            color LColor=ObjectGet(bottomLine, OBJPROP_COLOR);
+            if(bottomLine!=bL)
+                {
+                if((LColor==clrRed)&&((B==false)||(A==true))){if(BL[ii]<=price){if(E!=0){Alert("Red");} Deleter(bottomLine, BL, ii);}}
+                if((LColor==clrBlue)&&((A==false)||(B==true))){if(BL[ii]>=price){if(D!=0){Alert("Blue");} Deleter(bottomLine, BL, ii);}}
+                }
+            }
+        }
     if(FG==false)
         {
         ArrayResize(k,x-y);
@@ -1293,4 +1354,5 @@ void OnTick()
     Comment("    ^",iZ,":",Z,"|",iz,":",z,"=",k[Z-(y+1)],"|",k[z-(y+1)],
     "\n Lim",iO,":",O,"^",k[O-(y+1)],"_",l[O-(y+1)],".",io,":",o,"^",k[o-(y+1)],"_",l[o-(y+1)],"=",h,".",C,":",c,
     "\n    _",iW,":",W,"|",iw,":",w,"=",l[W-(y+1)],"|",l[w-(y+1)]);
-    }//U+1F48E-💎 Natalia Tanyatia
+    }
+//U+1F48E-💎 Natalia Tanyatia
