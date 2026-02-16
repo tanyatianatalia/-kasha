@@ -603,47 +603,47 @@ void T()
     }
 void Top()
     {
+    bottomLine=DoubleToString(price, Digits);
     if(ObjectFind(0, bottomLine)==-1)
         {
-        ArrayResize(BL, FVG+2);
+        ArrayResize(BL, (FVG+1)+1);
         BL[FVG+1]=price;
-        bottomLine=DoubleToString(price, Digits);
         ObjectCreate(0, bottomLine, OBJ_HLINE, 0, 0, price);
         ObjectSetInteger(0, bottomLine, OBJPROP_COLOR, clrBlue);
         ObjectSetInteger(0, bottomLine, OBJPROP_STYLE, STYLE_SOLID);
         ObjectSetInteger(0, bottomLine, OBJPROP_WIDTH, 1);
+        FVG++; bL=bottomLine;
         }
-    FVG++; bL=bottomLine;
     }
 void Bott()
     {
+    bottomLine=DoubleToString(price, Digits);
     if(ObjectFind(0, bottomLine)==-1)
         {
         ArrayResize(BL, FVG+2);
         BL[FVG+1]=price;
         ObjectCreate(0, bottomLine, OBJ_HLINE, 0, 0, price);
-        bottomLine=DoubleToString(price, Digits);
         ObjectSetInteger(0, bottomLine, OBJPROP_COLOR, clrRed);
         ObjectSetInteger(0, bottomLine, OBJPROP_STYLE, STYLE_SOLID);
         ObjectSetInteger(0, bottomLine, OBJPROP_WIDTH, 1);
+        FVG++; bL=bottomLine;
         }
-    FVG++; bL=bottomLine;
     }
 void Deleter(string obj, double &prices[], int index)
     {
     int size = ArraySize(prices);
-    if((index<0)||(index>=size))
+    if((index<0)||(index>=size)||(FVG!=size-1))
         return; // iInvalid
-    for(int i=index; i<size-1; i++)
-    {
-        prices[i]=prices[i+1];
-    }
-    ArrayResize(prices, size-1);
     if(ObjectFind(0, obj)!=-1)
         {
         ObjectDelete(0, obj);
         FVG--;
         }
+    for(int i=index; i<size-1; i++)
+        {
+        prices[i]=prices[i+1];
+        }
+    ArrayResize(prices, size-1);
     }
 void A()
     {
@@ -1194,11 +1194,11 @@ void OnTick()
         for(int ii=0; ii<FVG; ii++)
             {
             bottomLine=DoubleToString(BL[ii], Digits);
-            color LColor=ObjectGet(bottomLine, OBJPROP_COLOR);
+            color bLC=ObjectGet(bottomLine, OBJPROP_COLOR);
             if(bottomLine!=bL)
                 {
-                if((LColor==clrRed)&&((B==false)||(A==true))){if(BL[ii]<=price){if(E!=0){Alert("Red");} Deleter(bottomLine, BL, ii);}}
-                if((LColor==clrBlue)&&((A==false)||(B==true))){if(BL[ii]>=price){if(D!=0){Alert("Blue");} Deleter(bottomLine, BL, ii);}}
+                if((bLC==clrRed)&&((B==false)||(A==true))&&(BL[ii]<=price)){if(E!=0){Alert("Red");} Deleter(bottomLine, BL, ii);}
+                if((bLC==clrBlue)&&((A==false)||(B==true))&&(BL[ii]>=price)){if(D!=0){Alert("Blue");} Deleter(bottomLine, BL, ii);}
                 }
             }
         }
