@@ -1,0 +1,3 @@
+cd /data/data/com.termux/files/home/storage/shared/Intelligence/
+chmod +x ./setup.sh
+bash ./setup.sh
